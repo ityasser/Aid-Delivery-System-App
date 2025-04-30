@@ -39,7 +39,8 @@ class PersonDB  {
     person_tname = json['person_tname'] as String?;
     person_lname = json['person_lname'] as String?;
     mobile = json['person_mob_1'] as String?;
-    isReceived = (json['is_received'] as bool?)??false;
+    isReceived = (json['aid_person_status_rec']?.toString() == "1");
+
   }
 
   // Person({int? id_object}) : super(id_object: id_object);
@@ -57,7 +58,7 @@ class PersonDB  {
     json['person_sname'] =person_sname ;
     json['person_tname'] =person_tname ;
     json['person_lname'] =person_lname ;
-    json['is_received'] =isReceived ;
+    json['aid_person_status_rec'] =isReceived ? "1" : "0" ;
     json['project_id'] =project_id ;
 
     return json;

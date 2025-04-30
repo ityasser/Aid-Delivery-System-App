@@ -142,7 +142,7 @@ class LocalProjectCard extends StatelessWidget {
                     onPressed: onTapRemove,
                     icon: Icon(FontAwesomeIcons.remove,color: Colors.white,),
                     label: CustomText(
-                      "حذف",
+                      "اغلاق",
                       size: 11.sp,
                       fontFamily: Founts.normal,
                       color: ColorsUi.white,

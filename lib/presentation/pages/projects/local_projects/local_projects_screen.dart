@@ -54,7 +54,7 @@ class _ProjectsScreenState extends ConsumerState<LocalProjectsScreen> {
                     onTapRemove: () async{
                     // ObjectBox.instance.personBox.removeAll();
                     // ObjectBox.instance.projectBox.removeAll();
-                   await DialogService.showMessageDialog(title: "حذف المشروع",description: "حذف هذا المشروع يؤدي الى حذف بيانات المستفدين \n هل تريد بالتأكيد الاستمرار في الحذف؟",
+                   await DialogService.showMessageDialog(title: "اغلاق المشروع",description: "حذف هذا المشروع يؤدي الى حذف بيانات المستفدين داخل التطبيق \n\n هل تريد بالتأكيد الاستمرار في اغلاق المشروع؟",
                    btnOkOnPress: (n){
                      localProjectsNotifier.deleteProjectWithPersons(item);
                    });

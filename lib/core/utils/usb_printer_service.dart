@@ -33,7 +33,7 @@ class AidItem {
 
 
 
-class USBPrinterService {
+class USBPrinterService with Helpers {
 
 
 
@@ -223,9 +223,10 @@ class USBPrinterService {
 
     final title = TextPainter(
       text: TextSpan(
-        text: 'وزارة التنمية الاجتماعية - ${UserPreferences().getUser().store_name}',
+        text: 'وزارة التنمية الاجتماعية - ${projects.first.storesName} - ${UserPreferences().getUser().email?.split('@')[0]}',
+            // '${UserPreferences().getUser().store_name}',
         style: TextStyle(
-          fontSize: 30,
+          fontSize: 25,
           fontFamily: Founts.arabic, // استبدلها بخط يدعم العربية إن وجد
           color: Colors.black,
           fontWeight: FontWeight.bold,
@@ -647,7 +648,7 @@ class USBPrinterService {
 
 
 
-  showMessage(String message){
+  showMessagec(String message){
     print(message);
   }
   void printToUSBPrinter(String printerName, Uint8List data) {
@@ -693,6 +694,7 @@ class USBPrinterService {
     EndDocPrinter(printerHandle.value);
     ClosePrinter(printerHandle.value);
 
+    showMessage('✅ تم الطباعة بنجاح',error: false);
     print('✅ تم الطباعة بنجاح!');
   }
   Future<void> printReceipt(Person person,List<Project> projects) async {

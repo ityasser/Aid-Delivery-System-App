@@ -17,6 +17,8 @@ void main() async{
   await UserPreferences.initPreferences();
   await ObjectBox.init();
 
+  // await UserPreferences().clearAll();
+  // ObjectBox.clearAll();
 
   // SyncService.sync();
 

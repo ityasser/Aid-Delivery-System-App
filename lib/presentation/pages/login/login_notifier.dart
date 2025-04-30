@@ -62,6 +62,7 @@ class LoginNotifier extends StateNotifier<ReqStatus>
           ObjectBox.clearAll();
           dismissLoading();
           showMessage(response.message ?? "", error: false);
+          App.of()?.resetProviders();
           push(App.context, screen: MainScreen(),removeUntil: true);
         } else {
           dismissLoading();

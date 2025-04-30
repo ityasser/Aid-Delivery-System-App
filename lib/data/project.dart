@@ -17,14 +17,13 @@ class Project  extends Identifiable  {
   String? date;
   String? mobile;
   String? note;
-
-
+  String? storesName;
+  String? printNote;
 
   Project({int? object_id})
       : super(object_id: object_id);
 
   Project.fromJson(Map<String, dynamic> json) : super(object_id: (json['aid_manage_id'] as String).toInt()) {
-
     object_id =  (json['aid_manage_id'] as String).toInt();
     donation_name = json['donation_name'] as String?;
     aids_name = json['aids_name'] as String?;
@@ -32,6 +31,8 @@ class Project  extends Identifiable  {
     date = json['aid_manage_date'] as String?;
     mobile = json['mobile'] as String?;
     note = json['aid_manage_note'] as String?;
+    storesName = json['stores_area_name'] as String?;
+    printNote = json['print_note'] as String?;
 
 
   }
@@ -46,6 +47,9 @@ class Project  extends Identifiable  {
     json['aid_manage_date'] = date;
     json['mobile'] = mobile;
     json['aid_manage_note'] = note;
+    json['stores_area_name'] = storesName;
+    json['print_note'] = printNote;
+
 
     return json;
   }

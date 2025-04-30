@@ -5,7 +5,7 @@
   "entities": [
     {
       "id": "6:723013462078219792",
-      "lastPropertyId": "9:6655366095482945655",
+      "lastPropertyId": "11:6822221684237319630",
       "name": "ProjectDB",
       "properties": [
         {
@@ -47,6 +47,16 @@
         {
           "id": "9:6655366095482945655",
           "name": "donation_name",
+          "type": 9
+        },
+        {
+          "id": "10:5354422651691853890",
+          "name": "storesName",
+          "type": 9
+        },
+        {
+          "id": "11:6822221684237319630",
+          "name": "printNote",
           "type": 9
         }
       ],

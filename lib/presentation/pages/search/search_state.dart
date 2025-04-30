@@ -7,6 +7,7 @@ enum SearchStatus {
   searching,
   success,
   notFound,
+  received,
   error,
 }
 class SearchState {
@@ -49,6 +50,10 @@ class SearchState {
 
   factory SearchState.notFound() =>
       SearchState(status: SearchStatus.notFound,projects: [],selectedProjects:[]);
+
+  factory SearchState.received() =>
+      SearchState(status: SearchStatus.received,projects: [],selectedProjects:[]);
+
 
   factory SearchState.error(String msg) =>
       SearchState(status: SearchStatus.error, errorMessage: msg,projects: [],selectedProjects:[]);

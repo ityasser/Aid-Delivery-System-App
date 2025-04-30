@@ -22,6 +22,8 @@ class SearchPage extends ConsumerWidget {
   final TextEditingController searchController = TextEditingController(
     text: "",
   );
+  final FocusNode _focusNode = FocusNode();
+
   late SearchAidController personController;
 
   @override
@@ -42,6 +44,7 @@ class SearchPage extends ConsumerWidget {
               SizedBox(height: 20.h),
               Center(
                 child: TextFieldCustom(
+                  focusNode: _focusNode,
                   controller: searchController,
                   labelHint: "رقم الهوية",
                   textInputType: TextInputType.number,
@@ -50,8 +53,32 @@ class SearchPage extends ConsumerWidget {
                   ],
                   textInputAction: TextInputAction.search,
                   onFieldSubmitted:
-                      (value) => personController.searchByPid(value.toInt()),
+                      (value) {
+                        // personController.searchByPid(value.toInt());
+                        if(searchState.person!=null && searchState.person!.person_pid!.endsWith(value)){
+                          for (var project in searchState.selectedProjects) {
+                            personController.toggleReceived(searchState.person!, project,
+                                true//!searchState.person!.isReceived
+                                ,"");
 
+                          }
+                          USBPrinterService u = USBPrinterService();
+                          u.printReceipt(
+                            searchState.person!,
+                            personController.getProjectByPerson(searchState.person),
+                          );
+                          searchController.text="";
+                          personController.reset();
+                          personController.updateProjectsList();
+
+                        }else{
+                          if(value.isNotEmpty)
+                          personController.searchByPid(value.toInt());
+                        }
+                        Future.delayed(Duration(milliseconds: 50), () {
+                          FocusScope.of(context).requestFocus(_focusNode);
+                        });
+                      }
                   // onChanged: (value) => aidNotifier.search(value),
                 ),
               ),
@@ -62,6 +89,8 @@ class SearchPage extends ConsumerWidget {
                 Center(child: CircularProgressIndicator()),
               if (searchState.status == SearchStatus.notFound)
                 Center(child: Text("المستفيد غير موجود")),
+              if (searchState.status == SearchStatus.received)
+                Center(child: Text("المستفيد استلم مساعدته")),
 
               if (searchState.status == SearchStatus.error)
                 Center(child: Text("حدث خطأ: ${searchState.errorMessage}")),
@@ -193,6 +222,8 @@ class SearchPage extends ConsumerWidget {
                           searchState.person!,
                           personController.getProjectByPerson(searchState.person),
                         );
+                        personController.updateProjectsList();
+
                       },
                     );
 

@@ -158,6 +158,12 @@ class ObjectBox {
         .toList();
     return convertToPersonsList(list);
   }
+  List<Person> getAllPersonById(int pid) {
+    final query = ObjectBox.instance.personBox.query(PersonDB_.person_pid.endsWith("$pid"))
+        .build();
+    List<PersonDB> list=query.find();
+    return convertToPersonsList(list);
+  }
   List<Person> getPersonsByAidManageIdAndReceived(int projectId) {
     List<PersonDB> list= ObjectBox.instance.personBox
         .getAll()

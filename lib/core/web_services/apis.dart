@@ -53,7 +53,15 @@ class Apis {
   Future<BaseResponseList<Person>?> getPerson(int? id,{Map<String, dynamic>? query})async {
     BaseResponseList<Person>? response = await Webservice().getList("${ConstantsUrl.person}$id",queryParameters: query,varData: "person");
     return response!;
+  }
+  Future<BaseResponseList<Person>?> getAllPerson(int? id,{Map<String, dynamic>? query})async {
+    BaseResponseList<Person>? response = await Webservice().getList("${ConstantsUrl.all_person}$id",queryParameters: query,varData: "person");
+    return response!;
+  }
 
+  Future<BaseResponse?> closeCobon(int? id)async {
+    BaseResponse? response = await Webservice().get("${ConstantsUrl.closeCobon}/$id",);
+    return response;
 
   }
 

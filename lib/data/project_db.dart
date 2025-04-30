@@ -18,7 +18,8 @@ class ProjectDB   {
   String? mobile;
   String? note;
   int? aid_manage_id;
-
+  String? storesName;
+  String? printNote;
   ProjectDB({int? object_id});
 
   ProjectDB.fromJson(Map<String, dynamic> json) {
@@ -29,6 +30,8 @@ class ProjectDB   {
     date = json['aid_manage_date'] as String?;
     mobile = json['mobile'] as String?;
     note = json['aid_manage_note'] as String?;
+    storesName = json['stores_area_name'] as String?;
+    printNote = json['print_note'] as String?;
   }
 
 
@@ -42,7 +45,8 @@ class ProjectDB   {
     json['aid_manage_date'] = date;
     json['mobile'] = mobile;
     json['aid_manage_note'] = note;
-
+    json['stores_area_name'] = storesName;
+    json['print_note'] = printNote;
     return json;
   }
   @override

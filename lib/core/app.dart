@@ -24,7 +24,6 @@ class App extends ConsumerStatefulWidget {
   static GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>(
     debugLabel: "__navigator_key_app_1__",
   );
-
   static BuildContext get context {
     if (navigatorKey.currentContext == null) {
       throw Exception(
@@ -33,6 +32,7 @@ class App extends ConsumerStatefulWidget {
     }
     return navigatorKey.currentContext!;
   }
+  ProviderContainer? container;
 
   static AppLocalizations getString() {
     return AppLocalizations.of(context)!;
@@ -55,19 +55,27 @@ class App extends ConsumerStatefulWidget {
     TargetPlatform.windows,
     TargetPlatform.linux,
   ].contains(defaultTargetPlatform);
-  static Main? of(BuildContext context) =>
+  static Main? of() =>
       context.findAncestorStateOfType<Main>();
 
-  const App({Key? key}) : super(key: key);
+  App({Key? key}) : super(key: key);
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => Main();
 }
 
 class Main extends ConsumerState<App> with SingleTickerProviderStateMixin {
+
+   void resetProviders() {
+     setState(() {
+       widget.container?.dispose();
+       widget.container = ProviderContainer();
+     });
+  }
   @override
   void initState() {
     super.initState();
+   widget.container = ProviderContainer();
 
     AppLocal.iniLocale();
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -88,7 +96,8 @@ class Main extends ConsumerState<App> with SingleTickerProviderStateMixin {
       builder: (context, child) {
         return OKToast(
           /// set toast style, optional
-            child:MaterialApp(
+            child: UncontrolledProviderScope(
+            container:  widget.container!,child:MaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'Mosa',
           supportedLocales: [Locale('ar', 'AE'), Locale('en', 'US')],
@@ -116,7 +125,7 @@ class Main extends ConsumerState<App> with SingleTickerProviderStateMixin {
             GlobalCupertinoLocalizations.delegate,
           ],
           locale: ref.watch(AppLocal.localeProvider),
-        ));
+        )));
       },
     );
   }

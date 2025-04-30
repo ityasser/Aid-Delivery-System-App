@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:aid_registry_flutter_app/core/utils/helpers.dart';
 import 'package:aid_registry_flutter_app/data/project.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../projects/local_projects/local_projects_notifier.dart';
 import 'search_state.dart';
 import '../../../data/person.dart';
 import '../../../databse/objectbox_database.dart';
@@ -20,6 +21,11 @@ class SearchAidController extends Notifier<SearchState> with Helpers {
   void updateSelectedProjects(List<Project> newSelected) {
     state = state.copyWith(selectedProjects: [...newSelected]);
   }
+  bool hasAnyPersonNotReceived(int pid) {
+    List<Person> persons = ObjectBox.instance.getAllPersonById(pid);
+    return persons.any((person) => !person.isReceived);
+  }
+
   void searchByPid(int pid) {
 
     state = SearchState.searching();
@@ -35,7 +41,10 @@ class SearchAidController extends Notifier<SearchState> with Helpers {
 
         // print("searchByPid ${ selectedProjectsNotifier.state}");
 
-        state = SearchState.success(person,personProjects, [...personProjects]);
+        if(hasAnyPersonNotReceived(pid))
+          state = SearchState.success(person,personProjects, [...personProjects]);
+        else
+          state = SearchState.received();
 
 
       } else {
@@ -47,6 +56,12 @@ class SearchAidController extends Notifier<SearchState> with Helpers {
   }
   void reset() {
     state = SearchState.initial();
+  }
+  void updateProjectsList(){
+    LocalProjectsNotifier localProjectNotifier = ref.read(
+      localProjectsProvider.notifier,
+    );
+    localProjectNotifier.refreshList();
   }
   List<Project> getProjectByPerson(Person? person) {
     print("getProjectByPerson ${person?.project_id}");
