@@ -87,7 +87,7 @@ class _ReceivedAidScreenState extends ConsumerState<ReceivedAidScreen> {
             child: ListGeneral<Person>(
               listNotifier: aidNotifier,
               isRefresh: true,
-              isPagination: true,
+              isPagination: false,
               physics: BouncingScrollPhysics(),
               loadMoreType: LoadMoreType.notification,
               padding: const EdgeInsetsDirectional.symmetric(horizontal: 0),

@@ -1,3 +1,4 @@
+import 'package:aid_registry_flutter_app/core/utils/app_wrapper.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -86,14 +87,9 @@ class Main extends ConsumerState<App> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
 
-    return ScreenUtilInit(
-      designSize: App.isDesktop? Size(1440, 900):Size(390, 815),
-      minTextAdapt: true,
-      splitScreenMode: true,
+    return AppWrapper(
 
-      // useInheritedMediaQuery: true,
-      // scaleByHeight: true,
-      builder: (context, child) {
+      builder: (context) {
         return OKToast(
           /// set toast style, optional
             child: UncontrolledProviderScope(

@@ -144,10 +144,10 @@ class _MainScreenState extends ConsumerState<MainScreen>
                 );
               } else if (value == "about") {
                 DialogService.showMessageDialog(
-                  btnOkText: "تواصل",
-                  btnOkOnPress: (n) {
-                    openWhatsApp("970594899524");
-                  },
+                  // btnOkText: "تواصل",
+                  // btnOkOnPress: (n) {
+                  //  openWhatsApp("970594899524");
+                  // },
                   body: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Column(

@@ -281,12 +281,11 @@ mixin DialogService {
               ),
             ),
             buttonsTextStyle: TextStyle(height: 1.h,color: Colors.white),
-            btnOkText: btnOkText??App.getString().confirm,
+            btnOkText: btnOkText,//??App.getString().confirm,
             btnCancelText: App.getString().cancel,
 
-            btnOkOnPress: () {
-              if(btnOkOnPress!=null)btnOkOnPress(_noteController.text);
-            },
+            btnOkOnPress: (btnOkOnPress!=null)?() =>btnOkOnPress(_noteController.text):null,
+
             btnCancelOnPress: () {
             },
           ).show(),

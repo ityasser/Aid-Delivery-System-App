@@ -3,6 +3,7 @@ import 'package:aid_registry_flutter_app/core/theme/color.dart';
 import 'package:flutter/material.dart';
 import 'package:aid_registry_flutter_app/core/customs/chaed_network_image.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../../core/app.dart';
 import '../../../../core/theme/founts.dart';
 import '../../../../data/aid.dart';
 import '../../../../data/project.dart';
@@ -61,7 +62,75 @@ class LocalProjectCard extends StatelessWidget {
               ),
 
               SizedBox(height: 16.h),
-              Row(
+
+    LayoutBuilder(
+    builder: (context, constraints) {
+    double maxWidth = constraints.maxWidth;
+    double minButtonWidth = 220;
+    // int columns = (maxWidth / minButtonWidth).floor().clamp(1, 6);
+    int columns = (constraints.maxWidth / 250).floor().clamp(1, 3);
+
+    double spacing = 12.w;
+    double computedWidth = (constraints.maxWidth - (columns - 1) * spacing) / columns;
+    // double computedWidth = (maxWidth - ((columns - 1) * spacing)) / columns;
+
+      return Wrap(
+        alignment: WrapAlignment.spaceBetween,
+                  spacing: spacing,
+                  runSpacing: 10.h,
+                  children: [
+                    _buildButton(
+                      width: computedWidth,
+                      onPressed: onTapExportExcel,
+                      icon: FontAwesomeIcons.fileExcel,
+                      label: "المستلمين (${countReceived})",
+                      color: Colors.green,
+                    ),
+                    _buildButton(
+                      width: computedWidth,
+
+                      onPressed: onTapExportExcelNotReceived,
+                      icon: FontAwesomeIcons.fileExcel,
+                      label: "الغير مستلمين (${countNonReceived})",
+                      color: Colors.green,
+                    ),
+                    _buildButton(
+                      width: computedWidth,
+
+                      onPressed: onTapExportReceivedPdf,
+                      icon: FontAwesomeIcons.filePdf,
+                      label: "المستلمين",
+                      color: Colors.orange,
+                    ),
+                    _buildButton(
+                      width: computedWidth,
+
+                      onPressed: onTapExportNonReceivedPdf,
+                      icon: FontAwesomeIcons.filePdf,
+                      label: "الغير مستلمين",
+                      color: Colors.orange,
+                    ),
+                    _buildButton(
+                      width: computedWidth,
+
+                      onPressed: onTapUpdate,
+                      icon: FontAwesomeIcons.sync,
+                      label: "تحديث",
+                      color: Colors.green,
+                    ),
+                    _buildButton(
+                      width: computedWidth,
+                      onPressed: onTapRemove,
+                      icon: FontAwesomeIcons.remove,
+                      label: "إغلاق",
+                      color: Colors.red,
+                    ),
+                  ],
+                );
+    }
+              )
+              ,
+             /* Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
 
@@ -93,26 +162,14 @@ class LocalProjectCard extends StatelessWidget {
                       backgroundColor: Colors.green,
                     ),
                   ),
-                  ElevatedButton.icon(
-                    onPressed: onTapUpdate,
-                    icon: Icon(FontAwesomeIcons.sync,color:  Colors.white,),
-                   
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
-                    ), label:  CustomText(
-                    "تحديث",
-                    size: 11.sp,
-                    fontFamily: Founts.normal,
-                    color: ColorsUi.white,
-                  ),
-                  ),
+
                 ],
               ),
-              SizedBox(height: 20.h,),
+              SizedBox(height: 10.h,),
+
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-
 
                   ElevatedButton.icon(
                     onPressed: onTapExportReceivedPdf,
@@ -138,7 +195,28 @@ class LocalProjectCard extends StatelessWidget {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.orange,
                     ),
-                  ), ElevatedButton.icon(
+                  )
+                ],
+              ),
+              SizedBox(height: 10.h,),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                ElevatedButton.icon(
+                onPressed: onTapUpdate,
+                icon: Icon(FontAwesomeIcons.sync,color:  Colors.white,),
+
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                ), label:  CustomText(
+                "تحديث",
+                size: 11.sp,
+                fontFamily: Founts.normal,
+                color: ColorsUi.white,
+              ),
+              )
+                , ElevatedButton.icon(
                     onPressed: onTapRemove,
                     icon: Icon(FontAwesomeIcons.remove,color: Colors.white,),
                     label: CustomText(
@@ -152,9 +230,36 @@ class LocalProjectCard extends StatelessWidget {
                     ),
                   ),
                 ],
-              ),
+              ),*/
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+
+  Widget _buildButton({
+    required VoidCallback? onPressed,
+    required IconData icon,
+    required String label,
+    required Color color,
+    required double width,
+
+  }) {
+    return SizedBox(
+      width: width, // يعطي كل زر عرض 28% من عرض الشاشة
+      child: ElevatedButton.icon(
+        onPressed: onPressed,
+        icon: Icon(icon, color: Colors.white, size: 16.sp),
+        label: CustomText(
+          label,
+          size: 11.sp,
+          fontFamily: Founts.normal,
+          color: ColorsUi.white,
+        ),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: color,
         ),
       ),
     );

@@ -18,6 +18,8 @@ class AidNotifier extends ListNotifier<Person> {
 
   Future<BaseResponseList<Person>?> fetchData(int page) async {
     List<Person> list = getPersonsByProject(project?.object_id??0);
+    print("fetchData");
+    print("getPersonsByProject length ${list.length}");
     BaseResponseList<Person>? response = BaseResponseList(
       status: true,
       data: list,

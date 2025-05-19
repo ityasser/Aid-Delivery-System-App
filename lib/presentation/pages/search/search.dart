@@ -103,7 +103,7 @@ class SearchPage extends ConsumerWidget {
                       children: [
                         CustomText(
                           "الاسم",
-                          size: 20.sp,
+                          size: 18.sp,
                           color: ColorsUi.black,
                           fontFamily: Founts.medium,
                           fontWeight: FontWeight.bold,
@@ -111,7 +111,7 @@ class SearchPage extends ConsumerWidget {
                         SizedBox(width: 20.w),
                         CustomText(
                           searchState.person?.fullName,
-                          size: 20.sp,
+                          size: 18.sp,
                           color: ColorsUi.black,
                           fontFamily: Founts.normal,
                           fontWeight: FontWeight.normal,
@@ -123,7 +123,7 @@ class SearchPage extends ConsumerWidget {
                       children: [
                         CustomText(
                           "الهوية",
-                          size: 20.sp,
+                          size: 18.sp,
                           color: ColorsUi.black,
                           fontFamily: Founts.medium,
                           fontWeight: FontWeight.bold,
@@ -131,7 +131,7 @@ class SearchPage extends ConsumerWidget {
                         SizedBox(width: 20.w),
                         CustomText(
                           searchState.person?.person_pid ?? "",
-                          size: 20.sp,
+                          size: 18.sp,
                           color: ColorsUi.black,
                           fontFamily: Founts.normal,
                           fontWeight: FontWeight.normal,
@@ -144,7 +144,7 @@ class SearchPage extends ConsumerWidget {
                       children: [
                         CustomText(
                           "الجوال",
-                          size: 20.sp,
+                          size: 18.sp,
                           color: ColorsUi.black,
                           fontFamily: Founts.medium,
                           fontWeight: FontWeight.bold,
@@ -152,7 +152,7 @@ class SearchPage extends ConsumerWidget {
                         SizedBox(width: 20.w),
                         CustomText(
                           searchState.person?.mobile ?? "",
-                          size: 20.sp,
+                          size: 18.sp,
                           color: ColorsUi.black,
                           fontFamily: Founts.normal,
                           fontWeight: FontWeight.normal,
