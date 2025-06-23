@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:objectbox/objectbox.dart';
 import '../data/person_db.dart';
 import '../data/project_db.dart';
@@ -185,6 +186,7 @@ class ObjectBox {
     return list.map((person) => {
       "id": person.object_id, // استخدام Object ID
       "title": person.note??"", // استخدام الملاحظة
+      "received_time": person.receivedTime??"", // استخدام الملاحظة
     }).toList();
   }
 
@@ -205,6 +207,7 @@ void  updatePerson(Person apiPerson, Project? project) {
       // existingPerson.mobile = apiPerson.mobile;
       existingPerson.note = apiPerson.note;
       existingPerson.isReceived = apiPerson.isReceived;
+      existingPerson.receivedTime =apiPerson.receivedTime ;
        personBox.put(existingPerson);
 
     } else {

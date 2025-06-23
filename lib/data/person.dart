@@ -20,7 +20,7 @@ class Person extends Identifiable {
   String? note;
   String? mobile;
   bool isReceived = false;
-
+  String? receivedTime ;
   get fullName {
     return "$person_fname $person_sname $person_tname $person_lname";
   }
@@ -40,6 +40,7 @@ class Person extends Identifiable {
     person_lname = json['person_lname'] as String?;
     mobile = json['person_mob_1'] as String?;
     isReceived = (json['aid_person_status_rec']?.toString() == "1");
+    receivedTime= json['received_time'] as String?;
 
   }
 
@@ -59,6 +60,8 @@ class Person extends Identifiable {
     json['person_lname'] =person_lname ;
     json['aid_person_status_rec'] =isReceived ? "1" : "0" ;
     json['project_id'] =project_id ;
+    json['received_time'] =receivedTime ;
+
 
     return json;
   }

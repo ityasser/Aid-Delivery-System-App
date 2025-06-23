@@ -51,8 +51,10 @@ class SearchState {
   factory SearchState.notFound() =>
       SearchState(status: SearchStatus.notFound,projects: [],selectedProjects:[]);
 
-  factory SearchState.received() =>
-      SearchState(status: SearchStatus.received,projects: [],selectedProjects:[]);
+  // factory SearchState.received() =>
+  //     SearchState(status: SearchStatus.received,projects: [],selectedProjects:[]);
+   factory SearchState.received(Person person,projects,selectedProjects) =>
+      SearchState(status: SearchStatus.received, person: person,projects: projects,selectedProjects:selectedProjects);
 
 
   factory SearchState.error(String msg) =>

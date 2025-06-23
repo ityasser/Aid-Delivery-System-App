@@ -1,0 +1,18 @@
+# Dockerfile.build
+
+# Use prebuilt flutter-windows image
+#FROM flutter-windows
+FROM amitie10g/visualstudio2022buildtools
+SHELL ["powershell", "-Command"]
+
+
+WORKDIR C:/app
+
+# Copy your Flutter project files into container
+COPY . .
+
+# Get dependencies
+RUN flutter pub get
+
+# Build Windows executable
+RUN flutter build windows

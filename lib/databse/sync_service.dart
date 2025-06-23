@@ -11,9 +11,7 @@ import 'objectbox_database.dart';
 
 class SyncService {
 
-
   SyncService();
-
 
  static Future<void> sync() async {
     List<ConnectivityResult> connectivityResult = await Connectivity().checkConnectivity();

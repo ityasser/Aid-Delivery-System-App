@@ -48,7 +48,53 @@ class _AidListSectionState extends State<AidListPerson> {
       physics: BouncingScrollPhysics(),
       itemCount: widget.list_projects.length,
       itemBuilder:(context, index) {
-          return CheckboxListTile(
+        return  InkWell(
+          onTap: () {
+            final isSelected = widget.selectedProjects.any((item) =>
+            item.object_id == widget.list_projects[index].object_id);
+            setState(() {
+              if (isSelected) {
+                widget.selectedProjects
+                    .removeWhere((item) => item.object_id == widget.list_projects[index].object_id);
+              } else {
+                widget.selectedProjects.add(widget.list_projects[index]);
+              }
+            });
+            widget.onSelectionChanged(widget.selectedProjects);
+          },
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Row(
+              children: [
+                Checkbox(
+                  value: widget.selectedProjects.any((item) =>
+                  item.object_id == widget.list_projects[index].object_id),
+                  onChanged: (val) {
+                    setState(() {
+                      if (val!) {
+                        widget.selectedProjects.add(widget.list_projects[index]);
+                      } else {
+                        widget.selectedProjects
+                            .removeWhere((item) => item.object_id == widget.list_projects[index].object_id);
+                      }
+                      widget.onSelectionChanged(widget.selectedProjects);
+                    });
+                  },
+                ),
+                SizedBox(width: 12), // مسافة بين الـ checkbox والنص
+                Expanded(
+                  child: Text(
+                    widget.list_projects[index].title ?? "",
+                    style: TextStyle(fontSize: 18),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+
+        return CheckboxListTile(
+
             title: Text(
               widget.list_projects[index].title ?? "",
               style: TextStyle(fontSize: 18),

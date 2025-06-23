@@ -64,7 +64,7 @@
     },
     {
       "id": "7:6738862773154263558",
-      "lastPropertyId": "14:1271631955665736632",
+      "lastPropertyId": "15:2033265498118803335",
       "name": "PersonDB",
       "properties": [
         {
@@ -127,6 +127,11 @@
           "id": "14:1271631955665736632",
           "name": "project_id",
           "type": 6
+        },
+        {
+          "id": "15:2033265498118803335",
+          "name": "receivedTime",
+          "type": 9
         }
       ],
       "relations": []

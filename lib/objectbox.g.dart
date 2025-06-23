@@ -82,7 +82,7 @@ final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
       id: const obx_int.IdUid(7, 6738862773154263558),
       name: 'PersonDB',
-      lastPropertyId: const obx_int.IdUid(14, 1271631955665736632),
+      lastPropertyId: const obx_int.IdUid(15, 2033265498118803335),
       flags: 0,
       properties: <obx_int.ModelProperty>[
         obx_int.ModelProperty(
@@ -144,6 +144,11 @@ final _entities = <obx_int.ModelEntity>[
             id: const obx_int.IdUid(14, 1271631955665736632),
             name: 'project_id',
             type: 6,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(15, 2033265498118803335),
+            name: 'receivedTime',
+            type: 9,
             flags: 0)
       ],
       relations: <obx_int.ModelRelation>[],
@@ -337,7 +342,10 @@ obx_int.ModelDefinition getObjectBoxModel() {
               object.note == null ? null : fbb.writeString(object.note!);
           final mobileOffset =
               object.mobile == null ? null : fbb.writeString(object.mobile!);
-          fbb.startTable(15);
+          final receivedTimeOffset = object.receivedTime == null
+              ? null
+              : fbb.writeString(object.receivedTime!);
+          fbb.startTable(16);
           fbb.addInt64(0, object.id);
           fbb.addOffset(2, person_pidOffset);
           fbb.addOffset(3, person_fnameOffset);
@@ -350,6 +358,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
           fbb.addBool(10, object.isReceived);
           fbb.addInt64(12, object.aid_person_id);
           fbb.addInt64(13, object.project_id);
+          fbb.addOffset(14, receivedTimeOffset);
           fbb.finish(fbb.endTable());
           return object.id;
         },
@@ -378,8 +387,10 @@ obx_int.ModelDefinition getObjectBoxModel() {
                 .vTableGetNullable(buffer, rootOffset, 22)
             ..isReceived =
                 const fb.BoolReader().vTableGet(buffer, rootOffset, 24, false)
-            ..project_id = const fb.Int64Reader()
-                .vTableGetNullable(buffer, rootOffset, 30);
+            ..project_id =
+                const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 30)
+            ..receivedTime = const fb.StringReader(asciiOptimization: true)
+                .vTableGetNullable(buffer, rootOffset, 32);
 
           return object;
         })
@@ -480,4 +491,8 @@ class PersonDB_ {
   /// See [PersonDB.project_id].
   static final project_id =
       obx.QueryIntegerProperty<PersonDB>(_entities[1].properties[11]);
+
+  /// See [PersonDB.receivedTime].
+  static final receivedTime =
+      obx.QueryStringProperty<PersonDB>(_entities[1].properties[12]);
 }

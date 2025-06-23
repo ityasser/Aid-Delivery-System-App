@@ -279,7 +279,7 @@ class USBPrinterService with Helpers {
 
     final dateNow = TextPainter(
       text: TextSpan(
-        text: '${DateFormat('HH:mm dd-MM-yy').format(DateTime.now())}',
+        text: person.receivedTime??'${DateFormat('HH:mm dd-MM-yy').format(DateTime.now())}',
         style: TextStyle(
           fontSize: 25,
           fontFamily: Founts.arabic, // استبدلها بخط يدعم العربية إن وجد

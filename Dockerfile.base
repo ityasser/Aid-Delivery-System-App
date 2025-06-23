@@ -1,0 +1,33 @@
+# استخدم Windows Server Core كقاعدة
+#FROM flutter-windows:latest
+
+FROM amitie10g/visualstudio2022buildtools:latest
+SHELL ["powershell", "-Command"]
+
+RUN Invoke-WebRequest https://aka.ms/vs/17/release/vs_buildtools.exe -OutFile vs_buildtools.exe ; \
+Start-Process -Wait .\vs_buildtools.exe -ArgumentList '--quiet', '--norestart', '--nocache', '--wait', \
+'--installPath', 'C:\BuildTools', \
+'--add', 'Microsoft.VisualStudio.Workload.VCTools', \
+'--add', 'Microsoft.VisualStudio.Component.VC.Tools.x86.x64', \
+'--add', 'Microsoft.VisualStudio.Component.Windows10SDK.19041', \
+'--add', 'Microsoft.VisualStudio.Component.VC.CMake.Project', \
+'--add', 'Microsoft.VisualStudio.Component.CMake.Tools' ; \
+Remove-Item -Force vs_buildtools.exe
+Start-Process -Wait .\vs_buildtools.exe -ArgumentList '--quiet', '--norestart', '--nocache', '--wait', '--installPath', 'C:\BuildTools', '--add', 'Microsoft.VisualStudio.Workload.VCTools', '--add', 'Microsoft.VisualStudio.Component.VC.Tools.x86.x64', '--add', 'Microsoft.VisualStudio.Component.Windows10SDK.19041', '--add', 'Microsoft.VisualStudio.Component.VC.CMake.Project', '--add', 'Microsoft.VisualStudio.Component.CMake.Tools' ;
+ENV PATH="C:\\BuildTools\\VC\\Tools\\MSVC\\14.*\\bin\\Hostx64\\x64;\
+C:\\BuildTools\\MSBuild\\Current\\Bin;\
+C:\\BuildTools\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\CMake\\bin;\
+${PATH}"
+#ENV PATH="C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\MSBuild\\Current\\Bin;C:\\git\\cmd;C:\Windows\System32;C:\\flutter\\bin;C:\\Windows\\System32\\WindowsPowerShell\\v1.0;${PATH}"
+
+#RUN git config --global --add safe.directory '*'
+#RUN git config --global http.sslVerify false
+#RUN git clone --depth=1 https://github.com/flutter/flutter.git -b stable C:\flutter
+RUN flutter doctor
+
+#RUN Invoke-WebRequest -Uri "https://github.com/git-for-windows/git/releases/download/v2.42.0.windows.1/MinGit-2.42.0-busybox-64-bit.zip" -OutFile git.zip ; \
+#    Expand-Archive git.zip -DestinationPath C:\git ; \
+#    Remove-Item git.zip
+
+#RUN flutter doctor
+
