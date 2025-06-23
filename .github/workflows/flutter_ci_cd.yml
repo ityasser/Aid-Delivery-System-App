@@ -1,0 +1,85 @@
+name: Flutter CI/CD for Android and Windows
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build-android:
+    name: Build & Deploy Android APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.19.0'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      # Decode the keystore file from base64
+      - name: Decode keystore
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > android/app/upload-keystore.jks
+
+      # Generate key.properties file
+      - name: Create key.properties
+        run: |
+          echo "storePassword=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" > android/key.properties
+          echo "keyPassword=${{ secrets.ANDROID_KEY_PASSWORD }}" >> android/key.properties
+          echo "keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}" >> android/key.properties
+          echo "storeFile=upload-keystore.jks" >> android/key.properties
+
+      # Build the signed APK
+      - name: Build APK
+        run: flutter build apk --release
+
+      # Upload APK to Firebase App Distribution
+      - name: Upload to Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{ secrets.FIREBASE_APP_ID }}
+          serviceCredentialsFileContent: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          file: build/app/outputs/flutter-apk/app-release.apk
+          groups: testers
+
+      # Upload APK to GitHub Releases
+      - name: Upload APK to GitHub Releases
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: build/app/outputs/flutter-apk/app-release.apk
+          tag: release-${{ github.run_number }}
+          name: Android Release ${{ github.run_number }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  build-windows:
+    name: Build & Deploy Windows EXE
+    runs-on: windows-latest
+    needs: build-android
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.19.0'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build EXE
+        run: flutter build windows
+
+      - name: Upload EXE to GitHub Releases
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: build/windows/runner/Release/*.exe
+          tag: release-${{ github.run_number }}
+          overwrite: true

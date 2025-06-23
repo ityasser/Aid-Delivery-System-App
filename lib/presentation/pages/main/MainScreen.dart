@@ -35,11 +35,20 @@ class MainScreen extends ConsumerStatefulWidget {
 
 class _MainScreenState extends ConsumerState<MainScreen>
     with Helpers, DialogService {
+  final GlobalKey _navigationBarKey = GlobalKey(debugLabel: 'navigation_bar_global_Key');
+
   Timer? _syncTimer;
 
   @override
   void initState() {
     super.initState();
+
+    ref.read(mainControllerProvider.notifier).registerAnimationCallback(
+          (index) {
+            final navBarState = _navigationBarKey.currentState as dynamic;
+            navBarState.changeAnimation(index);
+      },
+    );
     _syncTimer =Timer.periodic(Duration(minutes: 2), (timer) {
        ref.read(mainControllerProvider.notifier).syncNow();
 
@@ -259,7 +268,7 @@ class _MainScreenState extends ConsumerState<MainScreen>
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
-        key: notifier.navigationBarGlobalKey,
+        key: _navigationBarKey,
         backgroundColor: Colors.white,
         selectedIconTheme: IconThemeData(size: 25.r),
         unselectedIconTheme: IconThemeData(size: 20.r),

@@ -21,7 +21,10 @@ final mainControllerProvider =
 
 class MainControllerNotifier extends StateNotifier<MainState> {
   Ref ref;
-
+  Function(int)? onAnimateNavBar;
+  void registerAnimationCallback(Function(int) callback) {
+    onAnimateNavBar = callback;
+  }
   MainControllerNotifier(this.ref)
     : super(
         MainState(
@@ -43,9 +46,7 @@ class MainControllerNotifier extends StateNotifier<MainState> {
         ),
       );
 
-  final navigationBarGlobalKey = GlobalKey(
-    debugLabel: "navigation_bar_global_Key",
-  );
+
 
   void changeSelect(int index) {
     final updatedItems = [...state.items];
@@ -55,8 +56,9 @@ class MainControllerNotifier extends StateNotifier<MainState> {
   }
 
   void onClickSearch() {
-    final navBarState = navigationBarGlobalKey.currentState as dynamic;
-    navBarState.changeAnimation(1);
+    // final navBarState = navigationBarGlobalKey.currentState as dynamic;
+    // navBarState.changeAnimation(1);
+    onAnimateNavBar?.call(1);
     changeSelect(1);
   }
 
