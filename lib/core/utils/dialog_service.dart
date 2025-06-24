@@ -231,15 +231,11 @@ mixin DialogService {
     Function(String? note)? btnOkOnPress
   }) async {
     TextEditingController _noteController = TextEditingController(text: note);
-
-
     await Future.delayed(Duration(milliseconds: 0)).then(
       (value) =>
           AwesomeDialog(
-
             context: App.context,
             width:700.w,
-
             dialogType: dialogType ?? DialogType.info,
             animType: AnimType.bottomSlide,
             title: title,

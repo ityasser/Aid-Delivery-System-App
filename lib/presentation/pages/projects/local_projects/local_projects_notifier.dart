@@ -44,6 +44,11 @@ class LocalProjectsNotifier extends ListNotifier<Project>
         .getPersonsByAidManageIdAndNotReceived(item.object_id!)
         .length;
   }
+  int getCountAll(Project item) {
+    return ObjectBox.instance
+        .getPersonsByAidManageId(item.object_id!)
+        .length;
+  }
 
   Future<BaseResponseList<Project>?> fetchData(int page) async {
     List<Project> projects = getAllProjects();

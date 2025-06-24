@@ -50,7 +50,7 @@ class _ProjectsScreenState extends ConsumerState<LocalProjectsScreen> {
 
                 itemBuilder: (context, index, item, isSelection) {
                   return LocalProjectCard(item: item,
-                    countReceived: localProjectsNotifier.getCountReceived(item),countNonReceived: localProjectsNotifier.getCountNonReceived(item),
+                    countReceived: localProjectsNotifier.getCountReceived(item),countAll:localProjectsNotifier.getCountAll(item), countNonReceived: localProjectsNotifier.getCountNonReceived(item),
                     onTapRemove: () async{
                     // ObjectBox.instance.personBox.removeAll();
                     // ObjectBox.instance.projectBox.removeAll();

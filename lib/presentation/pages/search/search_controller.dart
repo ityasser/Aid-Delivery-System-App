@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:aid_registry_flutter_app/core/utils/extension.dart';
 import 'package:aid_registry_flutter_app/core/utils/helpers.dart';
 import 'package:aid_registry_flutter_app/data/project.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -23,10 +24,28 @@ class SearchAidController extends Notifier<SearchState> with Helpers {
     localProjectNotifier.refreshList();
   }
   void toggleReceived(Person item, Project project, bool value, String? note) {
+
+
+
+    print("personWithProject: ${project.object_id}");
+
+    // pid + project
+    Person personWithProject = ObjectBox.instance.getPersonByIDAndProject(item.person_pid, project.object_id);
+    personWithProject.isReceived = value;
+    personWithProject.receivedTime = item.receivedTime;
+    if (note != null) personWithProject.note = note;
+    print("personWithProject: ${personWithProject.toJson()}");
+    ObjectBox.instance.updatePerson(personWithProject, project);
+    updateLocalProjects();
+  }
+  void removeAid(Person item, Project project, bool value, String? note) {
     item.isReceived = value;
     if (note != null) item.note = note;
 
-    ObjectBox.instance.updatePerson(item, project);
+    Person personWithProject = ObjectBox.instance.getPersonByIDAndProject(item.person_pid, project.object_id);
+    personWithProject.isReceived = value;
+    personWithProject.receivedTime = item.receivedTime;
+    ObjectBox.instance.removePerson(personWithProject, project);
     updateLocalProjects();
   }
 
@@ -34,12 +53,15 @@ class SearchAidController extends Notifier<SearchState> with Helpers {
     state = state.copyWith(selectedProjects: [...newSelected]);
   }
 
-  bool hasAnyPersonNotReceived(int pid) {
+  bool hasAnyPersonNotReceived(String? pid) {
     List<Person> persons = ObjectBox.instance.getAllPersonById(pid);
+    // print("getAllPersonById: $persons");
+    // print("getAllPersonById: ${persons.any((person) => !person.isReceived)}");
+
     return persons.any((person) => !person.isReceived);
   }
 
-  void searchByPid(int pid) {
+  void searchByPid(String? pid) {
     state = SearchState.searching();
 
     try {
@@ -53,17 +75,23 @@ class SearchAidController extends Notifier<SearchState> with Helpers {
 
         // print("searchByPid ${ selectedProjectsNotifier.state}");
 
-        if (hasAnyPersonNotReceived(pid))
+        if (hasAnyPersonNotReceived(pid)) {
+          print("SearchState: success");
+
           state = SearchState.success(person, personProjects, [
             ...personProjects,
           ]);
-        else
+        }else {
+          print("SearchState: received");
+
           state = SearchState.received(person, personProjects, [
             ...personProjects,
           ]);
+        }
       } else {
         state = SearchState.notFound();
       }
+
     } catch (e) {
       state = SearchState.error(e.toString());
     }

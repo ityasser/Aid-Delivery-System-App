@@ -19,10 +19,11 @@ class LocalProjectCard extends StatelessWidget {
   VoidCallback? onTapUpdate;
   VoidCallback? onTapExportReceivedPdf;
   VoidCallback? onTapExportNonReceivedPdf;
+  int? countAll;
   int? countReceived;
   int? countNonReceived;
 
-  LocalProjectCard({Key? key, required this.item,this.onTapRemove,this.countReceived,this.countNonReceived,this.onTapExportExcel,this.onTapUpdate,this.onTapExportNonReceivedPdf,this.onTap,this.onTapExportExcelNotReceived,this.onTapExportReceivedPdf}) : super(key: key);
+  LocalProjectCard({Key? key, required this.item,this.onTapRemove,this.countAll,this.countReceived,this.countNonReceived,this.onTapExportExcel,this.onTapUpdate,this.onTapExportNonReceivedPdf,this.onTap,this.onTapExportExcelNotReceived,this.onTapExportReceivedPdf}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -40,11 +41,15 @@ class LocalProjectCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CustomText(
-                item.title??"",
-                size: 16.sp,
-                fontFamily: Founts.medium
-              ),
+              Row(children: [CustomText(
+                  item.title??"",
+                  size: 16.sp,
+                  fontFamily: Founts.medium
+              ),CustomText(
+                  " (${countAll})",
+                  size: 16.sp,
+                  fontFamily: Founts.medium
+              ),],),
               SizedBox(height:15.h),
               CustomText(
                   item.date??"",
@@ -55,7 +60,7 @@ class LocalProjectCard extends StatelessWidget {
 
               SizedBox(height:10.h),
               CustomText(
-                  item.note??"",
+                  item.aids_name??"",
                   size: 12.sp,
                   fontFamily: Founts.normal,
                   color: ColorsUi.black,

@@ -128,10 +128,10 @@ class _MainScreenState extends ConsumerState<MainScreen>
                           ConstantsSherPref.password,
                           "",
                         );
-                        await UserPreferences().setValue(
-                          ConstantsSherPref.username,
-                          "",
-                        );
+                        // await UserPreferences().setValue(
+                        //   ConstantsSherPref.username,
+                        //   "",
+                        // );
                         await UserPreferences().setValue(
                           ConstantsSherPref.token,
                           '',

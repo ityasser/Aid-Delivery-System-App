@@ -59,7 +59,7 @@ class LoginNotifier extends StateNotifier<ReqStatus>
             ConstantsSherPref.password,
             passwordController.text,
           );
-          ObjectBox.clearAll();
+          // ObjectBox.clearAll();
           dismissLoading();
           showMessage(response.message ?? "", error: false);
           App.of()?.resetProviders();

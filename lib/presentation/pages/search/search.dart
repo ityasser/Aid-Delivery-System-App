@@ -16,6 +16,7 @@ import '../../../core/customs/text_field_custom.dart';
 import '../../../core/utils/dialog_service.dart';
 import '../../../core/utils/usb_printer_service.dart';
 import '../../../data/person.dart';
+import '../../../databse/objectbox_database.dart';
 import 'search_controller.dart';
 import 'search_state.dart';
 
@@ -49,7 +50,7 @@ class SearchPage extends ConsumerWidget {
               Center(
                 child: Row(
                   children: [
-                    Expanded (
+                    Expanded(
                       child: TextFieldCustom(
                         focusNode: _focusNode,
                         controller: searchController,
@@ -60,54 +61,69 @@ class SearchPage extends ConsumerWidget {
                         ],
                         textInputAction: TextInputAction.search,
                         onFieldSubmitted: (value) {
-                          // personController.searchByPid(value.toInt());
                           final now = DateTime.now();
+                          // إذا تم الضغط مرتين خلال فترة قصيرة
                           if (_lastEnterTime != null &&
-                              now.difference(_lastEnterTime!) < _enterThreshold) {
-                            if (searchState.person != null &&
-                                !searchState.person!.isReceived &&
-                                searchState.person!.person_pid!.endsWith(value)) {
-                              for (var project in searchState.selectedProjects) {
-                                print("action search: toggleReceived");
-                                searchState.person!.receivedTime = DateFormat(
-                                  'yyyy-MM-dd HH:mm:ss',
-                                ).format(DateTime.now());
-                                personController.toggleReceived(
-                                  searchState.person!,
-                                  project,
-                                  true, //!searchState.person!.isReceived
-                                  "",
-                                );
-                              }
-                              USBPrinterService u = USBPrinterService();
-                              u.printReceipt(
-                                searchState.person!,
-                                personController.getProjectByPerson(
-                                  searchState.person,
-                                ),
+                              now.difference(_lastEnterTime!) <
+                                  _enterThreshold) {
+                            print("Double press: تنفيذ التسليم والطباعة");
+
+                            for (var project in searchState.selectedProjects) {
+                              Person personWithProject = ObjectBox.instance.getPersonByIDAndProject( searchState.person?.person_pid, project.object_id);
+
+                            }
+                           if(personController.hasAnyPersonNotReceived(searchState.person!.person_pid)) {
+                             USBPrinterService u = USBPrinterService();
+                             u.printReceipt(
+                               searchState.person!,
+                               personController.getProjectByPerson(
+                                 searchState.person,
+                               ),
+                             );
+                           }
+                            for (var project in searchState.selectedProjects) {
+                              print("action search: toggleReceived");
+                              searchState.person!.receivedTime = DateFormat(
+                                'yyyy-MM-dd HH:mm:ss',
+                              ).format(DateTime.now());
+                              print(
+                                "action search: toggleReceived  ${searchState.person!.toJson()}",
                               );
-                              searchController.text = "";
-                              personController.reset();
-                              personController.updateProjectsList();
-                            } else {}
-                            _lastEnterTime = null;
+                              personController.toggleReceived(
+                                searchState.person!,
+                                project,
+                                true,
+                                "",
+                              );
+                            }
+
+
+                            searchController.text = "";
+                            // personController.reset();
+                            // personController.updateProjectsList();
+
+                            _lastEnterTime = null; // إعادة الضبط
                           } else {
-                            print("action search: searchByPid");
-                      
-                            if (value.isNotEmpty)
-                              personController.searchByPid(value.toInt());
-                            _lastEnterTime = now;
+                            print("Single press: تنفيذ البحث");
+
+                            if (value.isNotEmpty) {
+                              personController.searchByPid(value);
+                            }
+
+                            _lastEnterTime = now; // تخزين وقت الضغط
                           }
-                      
+
+                          // في كل الحالات، إعادة تركيز المؤشر
                           Future.delayed(Duration(milliseconds: 50), () {
                             FocusScope.of(context).requestFocus(_focusNode);
                           });
                         },
+
                         // onChanged: (value) => aidNotifier.search(value),
                       ),
                     ),
 
-                    SizedBox(width: 20.w,),
+                    SizedBox(width: 20.w),
                     Container(
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.grey.shade300),
@@ -120,67 +136,165 @@ class SearchPage extends ConsumerWidget {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        onSelected: (value) {
+                        onSelected: (value) async {
                           if (value == 'reprint') {
-                            // تنفيذ إعادة الطباعة
+                            if (searchState.person != null) {
+                              USBPrinterService u = USBPrinterService();
+                              u.printReceipt(
+                                searchState.person!,
+                                personController.getProjectByPerson(
+                                  searchState.person,
+                                ),
+                              );
+                            } else {
+                              personController.showMessage(
+                                "المستفيد غير موجود",
+                              );
+                            }
                           } else if (value == 'delivered_note') {
-                            // تنفيذ تسليم بملاحظة
+                            USBPrinterService u = USBPrinterService();
+                            if (searchState.person != null) {
+                              await DialogService.showMessageDialog(
+                                title: "حالة الاستلام",
+                                description:
+                                    "هل انت متاكد من تغير حالة الاستلام",
+                                labelNote: "الملاحظات",
+                                note: searchState.person?.note,
+                                btnOkText: "تأكيد",
+                                btnOkOnPress: (note) {
+                                  print(searchState.selectedProjects);
+                                  for (var project
+                                      in searchState.selectedProjects) {
+                                    searchState
+                                        .person!
+                                        .receivedTime = DateFormat(
+                                      'yyyy-MM-dd HH:mm:ss',
+                                    ).format(DateTime.now());
+                                    personController.toggleReceived(
+                                      searchState.person!,
+                                      project,
+                                      true, //!searchState.person!.isReceived
+                                      note,
+                                    );
+                                  }
+                                  u.printReceipt(
+                                    searchState.person!,
+                                    personController.getProjectByPerson(
+                                      searchState.person,
+                                    ),
+                                  );
+                                  personController.updateProjectsList();
+                                },
+                              );
+                            } else {
+                              personController.showMessage(
+                                "المستفيد غير موجود",
+                              );
+                            }
                           } else if (value == 'delete') {
-                            // تنفيذ حذف التسليم
+                            USBPrinterService u = USBPrinterService();
+                            if (searchState.person != null) {
+                              await DialogService.showMessageDialog(
+                                title: "حذف التسليم",
+                                description:
+                                    "هل انت متاكد من حذف المستفيد من المساعدة ",
+                                labelNote: "الملاحظات",
+                                note: searchState.person?.note,
+                                btnOkText: "تأكيد",
+                                btnOkOnPress: (note) {
+                                  print(searchState.selectedProjects);
+                                  for (var project
+                                      in searchState.selectedProjects) {
+                                    searchState.person!.receivedTime =
+                                        null; //DateFormat('yyyy-MM-dd HH:mm:ss',).format(DateTime.now());
+                                    personController.removeAid(
+                                      searchState.person!,
+                                      project,
+                                      false,
+                                      note,
+                                    );
+                                  }
+
+                                  if (searchState.person != null)
+                                    personController.searchByPid(
+                                      searchState.person!.person_pid,
+                                    );
+
+                                  personController.showMessage(
+                                    "تمت عملية الحذف بنجاح",
+                                    error: false,
+                                  );
+                                },
+                              );
+                            } else {
+                              personController.showMessage(
+                                "المستفيد غير موجود",
+                              );
+                            }
                           }
                         },
-                        itemBuilder: (BuildContext context) => [
-                          PopupMenuItem(
-                            value: 'reprint',
-                            child: Row(
-                              children: [
-                                Icon(Icons.print, color: Colors.blue),
-                                SizedBox(width: 8),
-                                Text("إعادة طباعة"),
-                              ],
-                            ),
-                          ),
-                          PopupMenuItem(
-                            value: 'delivered_note',
-                            child: Row(
-                              children: [
-                                Icon(Icons.note_alt_outlined, color: Colors.orange),
-                                SizedBox(width: 8),
-                                Text("تسليم بملاحظة"),
-                              ],
-                            ),
-                          ),
-                          PopupMenuItem(
-                            value: 'delete',
-                            child: Row(
-                              children: [
-                                Icon(Icons.delete_forever, color: Colors.red),
-                                SizedBox(width: 8),
-                                Text("حذف التسليم"),
-                              ],
-                            ),
-                          ),
-                        ],
+                        itemBuilder:
+                            (BuildContext context) => [
+                              PopupMenuItem(
+                                value: 'reprint',
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.print, color: Colors.blue),
+                                    SizedBox(width: 8),
+                                    Text("إعادة طباعة"),
+                                  ],
+                                ),
+                              ),
+                              PopupMenuItem(
+                                value: 'delivered_note',
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.note_alt_outlined,
+                                      color: Colors.orange,
+                                    ),
+                                    SizedBox(width: 8),
+                                    Text("تسليم بملاحظة"),
+                                  ],
+                                ),
+                              ),
+                              PopupMenuItem(
+                                value: 'delete',
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.delete_forever,
+                                      color: Colors.red,
+                                    ),
+                                    SizedBox(width: 8),
+                                    Text("حذف التسليم"),
+                                  ],
+                                ),
+                              ),
+                            ],
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 8,
+                          ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(Icons.manage_accounts, color: Colors.black87),
+                              Icon(
+                                Icons.manage_accounts,
+                                color: Colors.black87,
+                              ),
                               SizedBox(width: 10.w),
                               Text(
                                 "إجراءات",
                                 style: TextStyle(color: Colors.black87),
                               ),
-                              SizedBox(width:60.w),
+                              SizedBox(width: 60.w),
                             ],
                           ),
                         ),
                       ),
-                    )
-
-
-
+                    ),
                   ],
                 ),
               ),
@@ -195,314 +309,254 @@ class SearchPage extends ConsumerWidget {
               if (searchState.status == SearchStatus.error)
                 Center(child: Text("حدث خطأ: ${searchState.errorMessage}")),
 
-              if (searchState.status == SearchStatus.received)
-                Center(
-                  child: Container(
-                    color: Colors.redAccent,
-                    child: Text(
-                      "حالة المستفيد مستلم",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                ),
               SizedBox(height: 15.h),
               if (searchState.status == SearchStatus.success ||
                   searchState.status == SearchStatus.received)
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    LayoutBuilder(
-                      builder: (context, constraints) {
-                        double maxWidth = constraints.maxWidth;
-                        double minButtonWidth = 400;
-                        // int columns = (maxWidth / minButtonWidth).floor().clamp(1, 6);
-                        int columns = (constraints.maxWidth / minButtonWidth)
-                            .floor()
-                            .clamp(1, 3);
+                    Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      elevation: 4,
+                      color: Colors.white,
+                      child: Padding(
+                        padding: const EdgeInsets.all(20.0),
 
-                        print("columns $columns");
-                        double spacing = 12.w;
-                        double computedWidth =
-                            (constraints.maxWidth - (columns - 1) * spacing) /
-                            columns;
-                        // double computedWidth = (maxWidth - ((columns - 1) * spacing)) / columns;
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
 
-                        return Wrap(
-                          alignment: WrapAlignment.spaceBetween,
-                          spacing: spacing,
-                          runSpacing: 20.h,
                           children: [
-                            SizedBox(
-                              width: computedWidth,
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  CustomText(
-                                    "الاسم",
-                                    size: 18.sp,
-                                    color: ColorsUi.black,
-                                    fontFamily: Founts.medium,
-                                    fontWeight: FontWeight.bold,
+                            Row(
+                              children: [
+                                Expanded(
+                                  flex: 1,
+                                  child: Divider(
+                                    thickness: 1,
+                                    color: Colors.grey,
                                   ),
-                                  SizedBox(width: 20.w),
-                                  CustomText(
-                                    searchState.person?.fullName,
-                                    size: 18.sp,
-                                    color: ColorsUi.black,
-                                    fontFamily: Founts.normal,
-                                    fontWeight: FontWeight.normal,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8.0,
                                   ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(
-                              width: computedWidth,
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-
-                                children: [
-                                  CustomText(
-                                    "الهوية",
-                                    size: 18.sp,
-                                    color: ColorsUi.black,
-                                    fontFamily: Founts.medium,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  SizedBox(width: 20.w),
-                                  CustomText(
-                                    searchState.person?.person_pid ?? "",
-                                    size: 18.sp,
-                                    color: ColorsUi.black,
-                                    fontFamily: Founts.normal,
-                                    fontWeight: FontWeight.normal,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(
-                              width: computedWidth,
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  CustomText(
-                                    "الجوال",
-                                    size: 18.sp,
-                                    color: ColorsUi.black,
-                                    fontFamily: Founts.medium,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  SizedBox(width: 20.w),
-                                  CustomText(
-                                    searchState.person?.mobile ?? "",
-                                    size: 18.sp,
-                                    color: ColorsUi.black,
-                                    fontFamily: Founts.normal,
-                                    fontWeight: FontWeight.normal,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            if (searchState.person?.note != null)
-                              SizedBox(
-                                width: computedWidth,
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-
-                                  children: [
-                                    CustomText(
-                                      "الملاحظات",
-                                      size: 18.sp,
-                                      color: ColorsUi.black,
-                                      fontFamily: Founts.medium,
+                                  child: Text(
+                                    "البيانات الشخصية",
+                                    style: TextStyle(
+                                      fontSize: 16,
                                       fontWeight: FontWeight.bold,
                                     ),
-                                    SizedBox(width: 20.w),
-                                    CustomText(
-                                      searchState.person?.note ?? "",
-                                      size: 18.sp,
-                                      color: ColorsUi.black,
-                                      fontFamily: Founts.normal,
-                                      fontWeight: FontWeight.normal,
-                                    ),
-                                  ],
+                                  ),
                                 ),
-                              ),
+                                Expanded(
+                                  flex: 20,
+                                  child: Divider(
+                                    thickness: 1,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 50),
+                            LayoutBuilder(
+                              builder: (context, constraints) {
+                                double maxWidth = constraints.maxWidth;
+                                double minButtonWidth = 300;
+                                // int columns = (maxWidth / minButtonWidth).floor().clamp(1, 6);
+                                int columns = (constraints.maxWidth /
+                                        minButtonWidth)
+                                    .floor()
+                                    .clamp(1, 3);
+
+                                // print("columns $columns");
+                                double spacing = 12.w;
+                                double computedWidth =
+                                    (constraints.maxWidth -
+                                        (columns - 1) * spacing) /
+                                    columns;
+                                // double computedWidth = (maxWidth - ((columns - 1) * spacing)) / columns;
+
+                                return Wrap(
+                                  alignment: WrapAlignment.spaceBetween,
+                                  spacing: spacing,
+                                  runSpacing: 20.h,
+                                  children: [
+                                    SizedBox(
+                                      width: computedWidth,
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          CustomText(
+                                            "الاسم:",
+                                            size: 18.sp,
+                                            color: ColorsUi.black,
+                                            fontFamily: Founts.medium,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          SizedBox(width: 20.w),
+                                          CustomText(
+                                            searchState.person?.fullName,
+                                            size: 18.sp,
+                                            color: ColorsUi.black,
+                                            fontFamily: Founts.normal,
+                                            fontWeight: FontWeight.normal,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: computedWidth,
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+
+                                        children: [
+                                          CustomText(
+                                            ":الهوية",
+                                            size: 18.sp,
+                                            color: ColorsUi.black,
+                                            fontFamily: Founts.medium,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          SizedBox(width: 20.w),
+                                          CustomText(
+                                            searchState.person?.person_pid ??
+                                                "",
+                                            size: 18.sp,
+                                            color: ColorsUi.black,
+                                            fontFamily: Founts.normal,
+                                            fontWeight: FontWeight.normal,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: computedWidth,
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          CustomText(
+                                            "الجوال:",
+                                            size: 18.sp,
+                                            color: ColorsUi.black,
+                                            fontFamily: Founts.medium,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          SizedBox(width: 20.w),
+                                          CustomText(
+                                            searchState.person?.mobile ?? "",
+                                            size: 18.sp,
+                                            color: ColorsUi.black,
+                                            fontFamily: Founts.normal,
+                                            fontWeight: FontWeight.normal,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+
+                                    if (searchState.person?.note != null &&
+                                        (searchState.person?.note?.isNotEmpty ??
+                                            false))
+                                      SizedBox(
+                                        width: computedWidth,
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            CustomText(
+                                              "الملاحظات:",
+                                              size: 18.sp,
+                                              color: ColorsUi.black,
+                                              fontFamily: Founts.medium,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                            SizedBox(width: 20.w),
+                                            CustomText(
+                                              searchState.person?.note ?? "",
+                                              size: 18.sp,
+                                              color: ColorsUi.black,
+                                              fontFamily: Founts.normal,
+                                              fontWeight: FontWeight.normal,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                  ],
+                                );
+                              },
+                            ),
                           ],
-                        );
-                      },
-                    ),
-
-                    SizedBox(height: 20.h),
-                    CustomText(
-                      "المشاريع",
-                      size: 20.sp,
-                      color: ColorsUi.black,
-                      fontFamily: Founts.medium,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    AidListPerson(
-                      list_projects: searchState.projects ?? [],
-                      selectedProjects: searchState.selectedProjects,
-                      onSelectionChanged: (newSelected) {
-                        personController.updateSelectedProjects(newSelected);
-
-                        searchState.selectedProjects = [...newSelected];
-                        print(
-                          "onSelectionChanged projects:${searchState.projects}",
-                        );
-                        print(
-                          "onSelectionChanged selectedProjects:${searchState.selectedProjects}",
-                        );
-                      },
-                    ),
-                  ],
-                ),
-
-              if (searchState.status == SearchStatus.received)
-                Column(
-                  children: [
-                    if (searchState.person != null)
-                      FutureBuilder<Uint8List>(
-                        future: USBPrinterService.generateArabicImage(
-                          searchState.person!,
-                          searchState.selectedProjects,
                         ),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return CircularProgressIndicator(); // أو أي عنصر تحميل مؤقت
-                          } else if (snapshot.hasError) {
-                            return Text('خطأ في تحميل الصورة');
-                          } else if (snapshot.hasData) {
-                            return Container(
-                              alignment: AlignmentDirectional.center,
-                              width: 500,
-                              height: 150 + 4 * 35,
-                              color: Colors.grey,
-
-                              child: Image.memory(snapshot.data!),
-                            );
-                          } else {
-                            return Text('لا توجد صورة');
-                          }
-                        },
                       ),
-                    ElevatedButton(
-                      onPressed: () async {
-                        USBPrinterService u = USBPrinterService();
-                        u.printReceipt(
-                          searchState.person!,
-                          personController.getProjectByPerson(
-                            searchState.person,
-                          ),
-                        );
-                      },
-                      child: Text('اعادة طباعة عبر USB'),
                     ),
-                    ElevatedButton(
-                      onPressed: () async {
-                        for (var project in searchState.selectedProjects) {
-                          searchState.person!.receivedTime = DateFormat(
-                            'yyyy-MM-dd HH:mm:ss',
-                          ).format(DateTime.now());
-                          personController.toggleReceived(
-                            searchState.person!,
-                            project,
-                            true, //!searchState.person!.isReceived
-                            null,
-                          );
-                        }
-                        final unselectedProjects =
-                            searchState.projects.where((project) {
-                              return !searchState.selectedProjects.contains(
-                                project,
-                              );
-                            }).toList();
-                        print("unselectedProjects: ${unselectedProjects}");
-                        for (var project in unselectedProjects) {
-                          personController.toggleReceived(
-                            searchState.person!,
-                            project,
-                            false, //!searchState.person!.isReceived
-                            null,
-                          );
-                        }
-                        personController.showMessage(
-                          "تم تغير الحالة بنجاح",
-                          error: false,
-                        );
-                      },
-                      child: Text('حفظ التعديلات'),
+
+                    SizedBox(height: 40.h),
+                    Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      elevation: 4,
+                      color: Colors.white,
+                      child: Padding(
+                        padding: const EdgeInsets.all(20.0),
+
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(
+                                  flex: 1,
+                                  child: Divider(
+                                    thickness: 1,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8.0,
+                                  ),
+                                  child: Text(
+                                    "المشاريع",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 20,
+                                  child: Divider(
+                                    thickness: 1,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 50),
+                            AidListPerson(
+                              person: searchState.person!,
+                              list_projects: searchState.projects ?? [],
+                              selectedProjects: searchState.selectedProjects,
+                              onSelectionChanged: (newSelected) {
+                                personController.updateSelectedProjects(
+                                  newSelected,
+                                );
+                                searchState.selectedProjects = [...newSelected];
+                                print(
+                                  "onSelectionChanged projects:${searchState.projects}",
+                                );
+                                print(
+                                  "onSelectionChanged selectedProjects:${searchState.selectedProjects}",
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ],
                 ),
-
-              if (searchState.status == SearchStatus.success)
-                if (searchState.person != null)
-                  FutureBuilder<Uint8List>(
-                    future: USBPrinterService.generateArabicImage(
-                      searchState.person!,
-                      searchState.selectedProjects,
-                    ),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return CircularProgressIndicator(); // أو أي عنصر تحميل مؤقت
-                      } else if (snapshot.hasError) {
-                        return Text('خطأ في تحميل الصورة');
-                      } else if (snapshot.hasData) {
-                        return Container(
-                          alignment: AlignmentDirectional.center,
-                          width: 500,
-                          height: 150 + 4 * 35,
-                          color: Colors.grey,
-
-                          child: Image.memory(snapshot.data!),
-                        );
-                      } else {
-                        return Text('لا توجد صورة');
-                      }
-                    },
-                  ),
-              if (searchState.status == SearchStatus.success)
-                if (searchState.person != null)
-                  ElevatedButton(
-                    onPressed: () async {
-                      USBPrinterService u = USBPrinterService();
-                      if (searchState.person != null) {
-                        await DialogService.showMessageDialog(
-                          title: "حالة الاستلام",
-                          description: "هل انت متاكد من تغير حالة الاستلام",
-                          labelNote: "الملاحظات",
-                          note: searchState.person?.note,
-                          btnOkText: "تأكيد",
-                          btnOkOnPress: (note) {
-                            print(searchState.selectedProjects);
-                            for (var project in searchState.selectedProjects) {
-                              searchState.person!.receivedTime = DateFormat(
-                                'yyyy-MM-dd HH:mm:ss',
-                              ).format(DateTime.now());
-                              personController.toggleReceived(
-                                searchState.person!,
-                                project,
-                                true, //!searchState.person!.isReceived
-                                note,
-                              );
-                            }
-                            u.printReceipt(
-                              searchState.person!,
-                              personController.getProjectByPerson(
-                                searchState.person,
-                              ),
-                            );
-                            personController.updateProjectsList();
-                          },
-                        );
-                      } else {
-                        personController.showMessage("المستفيد غير موجود");
-                      }
-                    },
-                    child: Text('طباعة عبر USB'),
-                  ),
             ],
           ),
         ),
