@@ -83,7 +83,7 @@ dependencies:
   open_file: ^3.5.10
   google_mlkit_text_recognition: ^0.14.0
   camera: ^0.11.1
-  usb_serial: ^0.4.0
+  usb_serial: ^0.5.2
   win32: ^5.0.4
   esc_pos_utils_plus: ^2.0.4
   charset_converter: ^2.3.0

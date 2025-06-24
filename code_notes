@@ -1,0 +1,158 @@
+  if (searchState.status == SearchStatus.received)
+                Column(
+                  children: [
+                    if (searchState.person != null)
+                      FutureBuilder<Uint8List>(
+                        future: USBPrinterService.generateArabicImage(
+                          searchState.person!,
+                          searchState.selectedProjects,
+                        ),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return CircularProgressIndicator(); // أو أي عنصر تحميل مؤقت
+                          } else if (snapshot.hasError) {
+                            return Text('خطأ في تحميل الصورة');
+                          } else if (snapshot.hasData) {
+                            return Container(
+                              alignment: AlignmentDirectional.center,
+                              width: 500,
+                              height: 150 + 4 * 35,
+                              color: Colors.grey,
+
+                              child: Image.memory(snapshot.data!),
+                            );
+                          } else {
+                            return Text('لا توجد صورة');
+                          }
+                        },
+                      ),
+                    ElevatedButton(
+                      onPressed: () async {
+                        USBPrinterService u = USBPrinterService();
+                        u.printReceipt(
+                          searchState.person!,
+                          personController.getProjectByPerson(
+                            searchState.person,
+                          ),
+                        );
+                      },
+                      child: Text('اعادة طباعة عبر USB'),
+                    ),
+                    ElevatedButton(
+                      onPressed: () async {
+                        for (var project in searchState.selectedProjects) {
+                          searchState.person!.receivedTime = DateFormat(
+                            'yyyy-MM-dd HH:mm:ss',
+                          ).format(DateTime.now());
+                          personController.toggleReceived(
+                            searchState.person!,
+                            project,
+                            true, //!searchState.person!.isReceived
+                            null,
+                          );
+                        }
+                        final unselectedProjects =
+                            searchState.projects.where((project) {
+                              return !searchState.selectedProjects.contains(
+                                project,
+                              );
+                            }).toList();
+                        print("unselectedProjects: ${unselectedProjects}");
+                        for (var project in unselectedProjects) {
+                          personController.toggleReceived(
+                            searchState.person!,
+                            project,
+                            false, //!searchState.person!.isReceived
+                            null,
+                          );
+                        }
+                        personController.showMessage(
+                          "تم تغير الحالة بنجاح",
+                          error: false,
+                        );
+                      },
+                      child: Text('حفظ التعديلات'),
+                    ),
+                  ],
+                ),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+              if (searchState.status == SearchStatus.success)
+                if (searchState.person != null)
+                  FutureBuilder<Uint8List>(
+                    future: USBPrinterService.generateArabicImage(
+                      searchState.person!,
+                      searchState.selectedProjects,
+                    ),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return CircularProgressIndicator(); // أو أي عنصر تحميل مؤقت
+                      } else if (snapshot.hasError) {
+                        return Text('خطأ في تحميل الصورة');
+                      } else if (snapshot.hasData) {
+                        return Container(
+                          alignment: AlignmentDirectional.center,
+                          width: 500,
+                          height: 150 + 4 * 35,
+                          color: Colors.grey,
+
+                          child: Image.memory(snapshot.data!),
+                        );
+                      } else {
+                        return Text('لا توجد صورة');
+                      }
+                    },
+                  ),
+              if (searchState.status == SearchStatus.success)
+                if (searchState.person != null)
+                  ElevatedButton(
+                    onPressed: () async {
+                      USBPrinterService u = USBPrinterService();
+                      if (searchState.person != null) {
+                        await DialogService.showMessageDialog(
+                          title: "حالة الاستلام",
+                          description: "هل انت متاكد من تغير حالة الاستلام",
+                          labelNote: "الملاحظات",
+                          note: searchState.person?.note,
+                          btnOkText: "تأكيد",
+                          btnOkOnPress: (note) {
+                            print(searchState.selectedProjects);
+                            for (var project in searchState.selectedProjects) {
+                              searchState.person!.receivedTime = DateFormat(
+                                'yyyy-MM-dd HH:mm:ss',
+                              ).format(DateTime.now());
+                              personController.toggleReceived(
+                                searchState.person!,
+                                project,
+                                true, //!searchState.person!.isReceived
+                                note,
+                              );
+                            }
+                            u.printReceipt(
+                              searchState.person!,
+                              personController.getProjectByPerson(
+                                searchState.person,
+                              ),
+                            );
+                            personController.updateProjectsList();
+                          },
+                        );
+                      } else {
+                        personController.showMessage("المستفيد غير موجود");
+                      }
+                    },
+                    child: Text('طباعة عبر USB'),
+                  ),
