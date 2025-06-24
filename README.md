@@ -4,13 +4,47 @@ Palestinian Ministry of Social Development 2025
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+# Aid-Delivery-System – Flutter CI/CD Pipeline
 
-A few resources to get you started if this is your first Flutter project:
+This project includes a complete CI/CD pipeline using GitHub Actions to:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+✅ Build and sign APK for Android  
+✅ Build EXE for Windows  
+✅ Distribute APK via Firebase App Distribution  
+✅ Publish builds to GitHub Releases
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+---
+
+## 🔧 Requirements
+
+- Flutter 3.19.0 or higher
+- Firebase Project with App ID
+- Generated Android keystore (JKS)
+- GitHub Secrets configured
+
+---
+
+## 📁 GitHub Secrets to Add
+
+| Name                     | Description                          |
+|--------------------------|--------------------------------------|
+| ANDROID_KEYSTORE_BASE64 | Base64 content of keystore           |
+| ANDROID_KEYSTORE_PASSWORD | Keystore password                  |
+| ANDROID_KEY_ALIAS       | Alias name (e.g., upload)            |
+| ANDROID_KEY_PASSWORD    | Key password                         |
+| FIREBASE_APP_ID         | App ID from Firebase Console         |
+| FIREBASE_SERVICE_ACCOUNT| Raw JSON of Firebase service account |
+
+---
+
+## ▶️ How to Trigger CI/CD
+
+The workflow runs automatically on every `push` to the `main` branch. You can also trigger it manually via GitHub Actions tab.
+
+---
+
+## 📂 Outputs
+
+- `app-release.apk` → GitHub Releases + Firebase testers
+- `Aid-Delivery-System.exe` → GitHub Releases
+
