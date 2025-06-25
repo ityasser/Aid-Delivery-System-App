@@ -23,31 +23,26 @@ class SearchAidController extends Notifier<SearchState> with Helpers {
     // localProjectNotifier.fetchData(0);
     localProjectNotifier.refreshList();
   }
-  void toggleReceived(Person item, Project project, bool value, String? note) {
+  void toggleReceived({String? person_pid, int? project_id, required bool value, String? note}) {
 
+   print("personWithProject: ${project_id}");
 
-
-    print("personWithProject: ${project.object_id}");
-
-    // pid + project
-    Person personWithProject = ObjectBox.instance.getPersonByIDAndProject(item.person_pid, project.object_id);
+    Person personWithProject = ObjectBox.instance.getPersonByIDAndProject(person_pid, project_id);
     personWithProject.isReceived = value;
-    personWithProject.receivedTime = item.receivedTime;
-    if (note != null) personWithProject.note = note;
+    personWithProject.receivedTime = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
+    personWithProject.note = note;
     print("personWithProject: ${personWithProject.toJson()}");
-    ObjectBox.instance.updatePerson(personWithProject, project);
+    ObjectBox.instance.updatePerson(personWithProject, project_id);
     updateLocalProjects();
   }
-  void removeAid(Person item, Project project, bool value, String? note) {
-    item.isReceived = value;
-    if (note != null) item.note = note;
+  void removeAid({String? person_pid, int? project_id, required bool value, String? note}) {
 
-    Person personWithProject = ObjectBox.instance.getPersonByIDAndProject(item.person_pid, project.object_id);
+    Person personWithProject = ObjectBox.instance.getPersonByIDAndProject(person_pid, project_id);
     personWithProject.isReceived = value;
-    personWithProject.receivedTime = item.receivedTime;
+    personWithProject.receivedTime = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
     personWithProject.isDeleted=true;
-
-    ObjectBox.instance.removePerson(personWithProject, project);
+    personWithProject.note = note;
+    ObjectBox.instance.removePerson(personWithProject, project_id);
     updateLocalProjects();
   }
 

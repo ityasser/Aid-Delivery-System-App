@@ -25,27 +25,29 @@ class ObjectBox {
 
   static ObjectBox get instance => _instance;
 
-  static void clearAll(){
+  static void clearAll() {
     ObjectBox.instance.projectBox.removeAll();
     ObjectBox.instance.personBox.removeAll();
   }
-  void deleteProject(int projectId){
+
+  void deleteProject(int projectId) {
     final project = getProjectDB(projectId);
 
     ObjectBox.instance.projectBox.remove(project!.id!);
   }
+
   void deletePersonsInProject(int projectId) {
     final personBox = ObjectBox.instance.personBox;
 
     final project = getProjectDB(projectId);
     if (project != null) {
-      List<PersonDB> persons= ObjectBox.instance.personBox
-          .getAll()
-          .where((p) =>p.project_id==projectId)
-          .toList();
+      List<PersonDB> persons =
+          ObjectBox.instance.personBox
+              .getAll()
+              .where((p) => p.project_id == projectId)
+              .toList();
       personBox.removeMany(persons.map((p) => p.id).toList());
-
-    }else{
+    } else {
       print("project is null");
     }
   }
@@ -55,21 +57,21 @@ class ObjectBox {
 
     final project = getProjectDB(projectId);
     if (project != null) {
-      List<PersonDB> persons= ObjectBox.instance.personBox
-          .getAll()
-          .where((p) =>p.project_id==projectId && p.isReceived==true)
-          .toList();
+      List<PersonDB> persons =
+          ObjectBox.instance.personBox
+              .getAll()
+              .where((p) => p.project_id == projectId && p.isReceived == true)
+              .toList();
       personBox.removeMany(persons.map((p) => p.id).toList());
-
-    }else{
+    } else {
       print("project is null");
     }
   }
 
-
   List<PersonDB> getAllPersonsDB() {
     return ObjectBox.instance.personBox.getAll();
   }
+
   List<Person> getAllPersons() {
     return convertToPersonsList(getAllPersonsDB());
   }
@@ -78,7 +80,6 @@ class ObjectBox {
       projectDBList
           .map((projectDB) => Person.fromJson(projectDB.toJson()))
           .toList();
-
 
   List<ProjectDB> getAllProjectsDB() {
     return ObjectBox.instance.projectBox.getAll();
@@ -118,8 +119,8 @@ class ObjectBox {
   PersonDB toPersonDB(Person? person) {
     return PersonDB.fromJson(person?.toJson() ?? {});
   }
-  Person toPerson(PersonDB? person) {
 
+  Person toPerson(PersonDB? person) {
     print("aid: toPerson ${person?.toJson()}");
     return Person.fromJson(person?.toJson() ?? {});
   }
@@ -139,158 +140,170 @@ class ObjectBox {
     }
   }
 
-  PersonDB? getPersonDB(int? personID,int? projectId) {
-
+  PersonDB? getPersonDB(int? personID, int? projectId) {
     final query =
         ObjectBox.instance.personBox
-            .query(PersonDB_.aid_person_id.equals(personID!).and(PersonDB_.project_id.equals(projectId!)))
+            .query(
+              PersonDB_.aid_person_id
+                  .equals(personID!)
+                  .and(PersonDB_.project_id.equals(projectId!)),
+            )
             .build();
     PersonDB? card = query.findFirst();
 
     query.close();
     return card;
   }
-  Person getPersonByIDAndProject(String? pid,int? projectId){
+
+  Person getPersonByIDAndProject(String? pid, int? projectId) {
     final query =
-    ObjectBox.instance.personBox
-        .query(PersonDB_.person_pid.equals(pid.toString()).and(PersonDB_.project_id.equals(projectId!)))
-        .build();
+        ObjectBox.instance.personBox
+            .query(
+              PersonDB_.person_pid
+                  .equals(pid.toString())
+                  .and(PersonDB_.project_id.equals(projectId!)),
+            )
+            .build();
     PersonDB? card = query.findFirst();
 
     query.close();
     return toPerson(card);
-
   }
+
   Person? getPerson(String? personID) {
-    final query = ObjectBox.instance.personBox
-        .query(
-      PersonDB_.person_pid.startsWith(personID.toString())
-          .or(PersonDB_.person_pid.endsWith(personID.toString())),
-    )
-        .build();
+    final query =
+        ObjectBox.instance.personBox
+            .query(
+              PersonDB_.person_pid
+                  .startsWith(personID.toString())
+                  .or(PersonDB_.person_pid.endsWith(personID.toString())),
+            )
+            .build();
 
     print("getPerson ${query.findFirst()}");
     PersonDB? card = query.findFirst();
     query.close();
-    return card!=null?Person.fromJson(card.toJson()):null;
+    return card != null ? Person.fromJson(card.toJson()) : null;
   }
 
   List<Person> getAllPersonByProject(int? projectId) {
-
-    List<PersonDB> list= ObjectBox.instance.personBox
-        .getAll()
-        .where((p) =>p.project_id==projectId)
-        .toList();
+    List<PersonDB> list =
+        ObjectBox.instance.personBox
+            .getAll()
+            .where((p) => p.project_id == projectId)
+            .toList();
     return convertToPersonsList(list);
   }
+
   List<Person> getAllPersonByIDPerson(String? pid) {
-
-    List<PersonDB> list= ObjectBox.instance.personBox
-        .getAll()
-        .where((p) =>p.person_pid.toString().compareTo(pid.toString())==0)
-        .toList();
+    List<PersonDB> list =
+        ObjectBox.instance.personBox
+            .getAll()
+            .where(
+              (p) => p.person_pid.toString().compareTo(pid.toString()) == 0,
+            )
+            .toList();
     return convertToPersonsList(list);
   }
+
   List<Person> getAllPersonById(String? pid) {
-    final query = ObjectBox.instance.personBox.query(PersonDB_.person_pid.endsWith(pid.toString()).or(PersonDB_.person_pid.startsWith(pid.toString())))
-        .build();
-    List<PersonDB> list=query.find();
+    final query =
+        ObjectBox.instance.personBox
+            .query(
+              PersonDB_.person_pid
+                  .endsWith(pid.toString())
+                  .or(PersonDB_.person_pid.startsWith(pid.toString())),
+            )
+            .build();
+    List<PersonDB> list = query.find();
     return convertToPersonsList(list);
   }
-  List<Person> getPersonsByAidManageIdAndReceived(int projectId) {
-    List<PersonDB> list= ObjectBox.instance.personBox
-        .getAll()
-        .where((p) =>p.project_id==projectId && p.isReceived==true)
-        .toList();
-    return convertToPersonsList(list);
-  } List<Person> getPersonsByAidManageIdDeleted(int projectId) {
-    List<PersonDB> list= ObjectBox.instance.personBox
-        .getAll()
-        .where((p) =>p.project_id==projectId && p.isDeleted==true)
-        .toList();
-    return convertToPersonsList(list);
-  }
-  List<Person> getPersonsByAidManageIdAndNotReceived(int projectId) {
-    List<PersonDB> list= ObjectBox.instance.personBox
-        .getAll()
-        .where((p) =>p.project_id==projectId && p.isReceived==false)
-        .toList();
-    return convertToPersonsList(list);
-  }
-  List<Person> getPersonsByAidManageId(int projectId) {
-    List<PersonDB> list= ObjectBox.instance.personBox
-        .getAll()
-        .where((p) =>p.project_id==projectId)
-        .toList();
-    return convertToPersonsList(list);
-  }
-  List<Map<String, dynamic>> getPersonsByProjectAndReceived(int projectId) {
 
+  List<Person> getPersonsByAidManageIdAndReceived(int projectId) {
+    List<PersonDB> list =
+        ObjectBox.instance.personBox
+            .getAll()
+            .where((p) => p.project_id == projectId && p.isReceived == true)
+            .toList();
+    return convertToPersonsList(list);
+  }
+
+  List<Person> getPersonsByAidManageIdDeleted(int projectId) {
+    List<PersonDB> list =
+        ObjectBox.instance.personBox
+            .getAll()
+            .where((p) => p.project_id == projectId && p.isDeleted == true)
+            .toList();
+    return convertToPersonsList(list);
+  }
+  List<PersonDB> getPersonsDBByAidManageIdDeleted(int? projectId) {
+    List<PersonDB> list =
+        ObjectBox.instance.personBox
+            .getAll()
+            .where((p) => p.project_id == projectId && p.isDeleted == true)
+            .toList();
+    return list;
+  }
+
+  List<Person> getPersonsByAidManageIdAndNotReceived(int projectId) {
+    List<PersonDB> list =
+        ObjectBox.instance.personBox
+            .getAll()
+            .where((p) => p.project_id == projectId && p.isReceived == false)
+            .toList();
+    return convertToPersonsList(list);
+  }
+
+  List<Person> getPersonsByAidManageId(int projectId) {
+    List<PersonDB> list =
+        ObjectBox.instance.personBox
+            .getAll()
+            .where((p) => p.project_id == projectId)
+            .toList();
+    return convertToPersonsList(list);
+  }
+
+  List<Map<String, dynamic>> getPersonsByProjectAndReceived(int projectId) {
     List<Person> list = getPersonsByAidManageIdAndReceived(projectId);
 
-    return list.map((person) => {
-      "id": person.object_id, // استخدام Object ID
-      "title": person.note??"", // استخدام الملاحظة
-      "received_time": person.receivedTime??"", // استخدام الملاحظة
-    }).toList();
+    return list
+        .map(
+          (person) => {
+            "id": person.object_id, // استخدام Object ID
+            "title": person.note ?? "", // استخدام الملاحظة
+            "received_time": person.receivedTime ?? "", // استخدام الملاحظة
+          },
+        )
+        .toList();
   }
- List<Map<String, dynamic>> getPersonsByProjectDeleted(int projectId) {
 
+  List<Map<String, dynamic>> getPersonsByProjectDeleted(int projectId) {
     List<Person> list = getPersonsByAidManageIdDeleted(projectId);
 
-    return list.map((person) => {
-      "id": person.object_id, // استخدام Object ID
-      "title": person.note??"", // استخدام الملاحظة
-      "received_time": person.receivedTime, // استخدام الملاحظة
-    }).toList();
+    return list
+        .map(
+          (person) => {
+            "id": person.object_id, // استخدام Object ID
+            "title": person.note ?? "", // استخدام الملاحظة
+            "received_time": person.receivedTime, // استخدام الملاحظة
+          },
+        )
+        .toList();
   }
 
-void  updatePerson(Person apiPerson, Project? project) {
-
-    PersonDB? existingPerson = getPersonDB(apiPerson.object_id,project?.object_id);
-    if (existingPerson != null) {
-
-      // print("existingPerson ${existingPerson.project_id} = ${apiPerson.project_id}");
-      // existingPerson.project_id = apiPerson.project_id;
-      // existingPerson.aid_person_id = apiPerson.object_id;
-      // existingPerson.person_pid = apiPerson.person_pid;
-      // existingPerson.person_fname = apiPerson.person_fname;
-      // existingPerson.person_sname = apiPerson.person_sname;
-      // existingPerson.person_tname = apiPerson.person_tname;
-      // existingPerson.person_lname = apiPerson.person_lname;
-      // existingPerson.date = apiPerson.date;
-      // existingPerson.mobile = apiPerson.mobile;
-      if (apiPerson.note != null && apiPerson.note!.isNotEmpty) {
-        existingPerson.note = apiPerson.note;
-      }
-
-      if (apiPerson.isReceived !=  existingPerson.isReceived) {
-        existingPerson.isReceived = apiPerson.isReceived;
-      }
-
-      if (apiPerson.receivedTime != null && apiPerson.receivedTime!.isNotEmpty) {
-        existingPerson.receivedTime = apiPerson.receivedTime;
-      }
-
-      print("receivedTime: ${existingPerson.isReceived??""}");
-       personBox.put(existingPerson);
-
-    } else {
-      PersonDB apiPersonDB = toPersonDB(apiPerson);
-      apiPersonDB.id = 0;
-
-      apiPersonDB.project_id = project?.object_id;
-      personBox.put(apiPersonDB);
-
-
+  void resetPersonDeleted(int? projectId) {
+    List<PersonDB> list = getPersonsDBByAidManageIdDeleted(projectId);
+    for (PersonDB person in list) {
+      person.isDeleted = false;
+      person.receivedTime = null;
+      person.note=null;
+      personBox.put(person);
     }
   }
 
-  void  removePerson(Person apiPerson, Project? project) {
-
-    PersonDB? existingPerson = getPersonDB(apiPerson.object_id,project?.object_id);
+  void updatePerson(Person apiPerson, int? object_id) {
+    PersonDB? existingPerson = getPersonDB(apiPerson.object_id, object_id);
     if (existingPerson != null) {
-
       // print("existingPerson ${existingPerson.project_id} = ${apiPerson.project_id}");
       // existingPerson.project_id = apiPerson.project_id;
       // existingPerson.aid_person_id = apiPerson.object_id;
@@ -305,40 +318,78 @@ void  updatePerson(Person apiPerson, Project? project) {
         existingPerson.note = apiPerson.note;
       }
 
-      if (apiPerson.isReceived !=  existingPerson.isReceived) {
+      if (apiPerson.isReceived != existingPerson.isReceived) {
         existingPerson.isReceived = apiPerson.isReceived;
       }
 
+      print("receivedTimexxxxx: ${apiPerson.receivedTime}");
+      print(
+        "receivedTimexxxxx: ${(apiPerson.receivedTime != null && apiPerson.receivedTime!.isNotEmpty)}",
+      );
+      if (apiPerson.receivedTime != null &&
+          apiPerson.receivedTime!.isNotEmpty) {
         existingPerson.receivedTime = apiPerson.receivedTime;
-        existingPerson.isDeleted = apiPerson.isDeleted;
+      }
 
-
-      print("receivedTime: ${existingPerson.isReceived??""}");
       personBox.put(existingPerson);
-
     } else {
       PersonDB apiPersonDB = toPersonDB(apiPerson);
       apiPersonDB.id = 0;
 
-      apiPersonDB.project_id = project?.object_id;
+      apiPersonDB.project_id = object_id;
       personBox.put(apiPersonDB);
+    }
+  }
 
+  void removePerson(Person apiPerson, int? object_id) {
+    PersonDB? existingPerson = getPersonDB(apiPerson.object_id, object_id);
+    if (existingPerson != null) {
+      // print("existingPerson ${existingPerson.project_id} = ${apiPerson.project_id}");
+      // existingPerson.project_id = apiPerson.project_id;
+      // existingPerson.aid_person_id = apiPerson.object_id;
+      // existingPerson.person_pid = apiPerson.person_pid;
+      // existingPerson.person_fname = apiPerson.person_fname;
+      // existingPerson.person_sname = apiPerson.person_sname;
+      // existingPerson.person_tname = apiPerson.person_tname;
+      // existingPerson.person_lname = apiPerson.person_lname;
+      // existingPerson.date = apiPerson.date;
+      // existingPerson.mobile = apiPerson.mobile;
+      if (apiPerson.note != null && apiPerson.note!.isNotEmpty) {
+        existingPerson.note = apiPerson.note;
+      }
 
+      if (apiPerson.isReceived != existingPerson.isReceived) {
+        existingPerson.isReceived = apiPerson.isReceived;
+      }
+
+      existingPerson.receivedTime = apiPerson.receivedTime;
+      existingPerson.isDeleted = apiPerson.isDeleted;
+
+      print("receivedTime: ${existingPerson.isReceived ?? ""}");
+      personBox.put(existingPerson);
+    } else {
+      PersonDB apiPersonDB = toPersonDB(apiPerson);
+      apiPersonDB.id = 0;
+
+      apiPersonDB.project_id = object_id;
+      personBox.put(apiPersonDB);
     }
   }
 
   List<Project> getAllProjectByPerson(Person? person) {
-    List<Person> allPersonByIDPerson=ObjectBox.instance.getAllPersonByIDPerson(person?.person_pid.toString());
-    List<ProjectDB> all=[];
+    List<Person> allPersonByIDPerson = ObjectBox.instance
+        .getAllPersonByIDPerson(person?.person_pid.toString());
+    List<ProjectDB> all = [];
     for (Person person in allPersonByIDPerson) {
-      final query = ObjectBox.instance.projectBox.query(ProjectDB_.aid_manage_id.equals(person.project_id??000))
-          .build();
+      final query =
+          ObjectBox.instance.projectBox
+              .query(ProjectDB_.aid_manage_id.equals(person.project_id ?? 000))
+              .build();
       List<ProjectDB> list = query.find();
 
       query.close();
       all.addAll(list);
     }
-
 
     print(all);
     return convertToProjectList(all);

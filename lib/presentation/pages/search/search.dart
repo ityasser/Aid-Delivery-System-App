@@ -70,34 +70,35 @@ class SearchPage extends ConsumerWidget {
                             print("Double press: تنفيذ التسليم والطباعة");
 
                             for (var project in searchState.selectedProjects) {
-                              Person personWithProject = ObjectBox.instance.getPersonByIDAndProject( searchState.person?.person_pid, project.object_id);
-
+                              Person personWithProject = ObjectBox.instance
+                                  .getPersonByIDAndProject(
+                                    searchState.person?.person_pid,
+                                    project.object_id,
+                                  );
                             }
-                           if(personController.hasAnyPersonNotReceived(searchState.person!.person_pid)) {
-                             USBPrinterService u = USBPrinterService();
-                             u.printReceipt(
-                               searchState.person!,
-                               personController.getProjectByPerson(
-                                 searchState.person,
-                               ),
-                             );
-                           }
+                            if (personController.hasAnyPersonNotReceived(
+                              searchState.person!.person_pid,
+                            )) {
+                              USBPrinterService u = USBPrinterService();
+                              u.printReceipt(
+                                searchState.person!,
+                                personController.getProjectByPerson(
+                                  searchState.person,
+                                ),
+                              );
+                            }
                             for (var project in searchState.selectedProjects) {
                               print("action search: toggleReceived");
-                              searchState.person!.receivedTime = DateFormat(
-                                'yyyy-MM-dd HH:mm:ss',
-                              ).format(DateTime.now());
                               print(
                                 "action search: toggleReceived  ${searchState.person!.toJson()}",
                               );
                               personController.toggleReceived(
-                                searchState.person!,
-                                project,
-                                true,
-                                "",
+                                person_pid: searchState.person!.person_pid,
+                                project_id: project.object_id,
+                                value: true,
+                                note: "",
                               );
                             }
-
 
                             searchController.text = "";
                             // personController.reset();
@@ -166,16 +167,12 @@ class SearchPage extends ConsumerWidget {
                                   print(searchState.selectedProjects);
                                   for (var project
                                       in searchState.selectedProjects) {
-                                    searchState
-                                        .person!
-                                        .receivedTime = DateFormat(
-                                      'yyyy-MM-dd HH:mm:ss',
-                                    ).format(DateTime.now());
                                     personController.toggleReceived(
-                                      searchState.person!,
-                                      project,
-                                      true, //!searchState.person!.isReceived
-                                      note,
+                                      person_pid:
+                                          searchState.person!.person_pid,
+                                      project_id: project.object_id,
+                                      value: true,
+                                      note: note,
                                     );
                                   }
                                   u.printReceipt(
@@ -206,13 +203,12 @@ class SearchPage extends ConsumerWidget {
                                   print(searchState.selectedProjects);
                                   for (var project
                                       in searchState.selectedProjects) {
-                                    searchState.person!.receivedTime =
-                                        DateFormat('yyyy-MM-dd HH:mm:ss',).format(DateTime.now());
                                     personController.removeAid(
-                                      searchState.person!,
-                                      project,
-                                      false,
-                                      note,
+                                      person_pid:
+                                          searchState.person!.person_pid,
+                                      project_id: project.object_id,
+                                      value: false,
+                                      note: note,
                                     );
                                   }
 

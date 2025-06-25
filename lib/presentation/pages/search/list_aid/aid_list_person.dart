@@ -138,7 +138,7 @@ class _AidListSectionState extends State<AidListPerson> {
                   fontWeight: FontWeight.normal,
                 ), SizedBox(width: 10.w,),
                 CustomText(
-                  aid.isDeleted?"":aid.receivedTime??"",
+                  !aid.isReceived &&aid.isDeleted?"":aid.receivedTime??"",
                   size: 18.sp,
                   color:
                   (aid.isReceived)

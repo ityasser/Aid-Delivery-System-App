@@ -41,6 +41,17 @@ class Apis {
     return response!;
   }
 
+  Future<BaseResponse?> uploadPersonsDeleted(
+      Map<String, dynamic>? body,
+      ) async {
+    print("uploadPersons");
+
+    print(body);
+    BaseResponse? response =
+    await Webservice().post(ConstantsUrl.setNotReceive, formData: body);
+    return response!;
+  }
+
   Future<BaseResponseList<Aid>?> getAids({Map<String, dynamic>? query})async {
 
     BaseResponseList<Aid>? response = await Webservice().getList(ConstantsUrl.projects,queryParameters: query);

@@ -44,7 +44,8 @@ class PersonDB  {
     mobile = json['person_mob_1'] as String?;
     isReceived = (json['aid_person_status_rec']?.toString() == "1");
     receivedTime = json['received_time'] as String?;
-    isDeleted = json['is_deleted'] as String?;
+    isDeleted = (json['is_deleted'] as bool?) ?? false;
+
 
   }
 
@@ -66,6 +67,7 @@ class PersonDB  {
     json['aid_person_status_rec'] =isReceived ? "1" : "0" ;
     json['project_id'] =project_id ;
     json['is_deleted'] =isDeleted ;
+    json['received_time'] =receivedTime ;
 
 
     return json;

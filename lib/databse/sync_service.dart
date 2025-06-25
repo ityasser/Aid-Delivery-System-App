@@ -36,7 +36,7 @@ class SyncService {
             print("downloadPersonByProject: ${item.aids_name} =>persons length : ${persons.length}");
 
             for (var person in persons) {
-              ObjectBox.instance.updatePerson(person, project);
+              ObjectBox.instance.updatePerson(person, project.object_id);
             }
             print("downloadPersonByProject: ${item.aids_name} =>${response.message ?? ""}");
             if(message!=null)message(response.message);
@@ -90,30 +90,32 @@ class SyncService {
   }
 static Future<void> uploadDeletedPersonByProject(Project item,{Function(String? note)? message}) async {
     try {
-      List<Map<String, dynamic>> json = ObjectBox.instance.getPersonsByProjectAndReceived(item.object_id ?? 0);
-      print("uploadProjectWithPersons: ${item.aids_name} =>$json");
+      List<Map<String, dynamic>> json = ObjectBox.instance.getPersonsByProjectDeleted(item.object_id ?? 0);
+      print("uploadProjectWithPersonsDeleted: ${item.aids_name} =>$json");
       if(json.isNotEmpty){
-      BaseResponse? response = await Apis().uploadPersons({"data": jsonEncode(json)});
+      BaseResponse? response = await Apis().uploadPersonsDeleted({"data": jsonEncode(json)});
       if (response != null) {
         if (response.status!) {
-          print("uploadProjectWithPersons: ${item.aids_name} =>${response.message ?? ""}");
+
+          ObjectBox.instance.resetPersonDeleted(item.object_id);
+          print("uploadProjectWithPersonsDeleted: ${item.aids_name} =>${response.message ?? ""}");
           // ObjectBox.instance.deletePersonsReceivedInProject(item.object_id!);
-          print("uploadProjectWithPersons: ${item.aids_name} =>delete Persons In Project");
+          print("uploadProjectWithPersonsDeleted: ${item.aids_name} =>delete Persons In Project");
           if(message!=null)message(response.message);
         } else {
-          print("uploadProjectWithPersons: ${item.aids_name} =>${response.message ?? ""}");
+          print("uploadProjectWithPersonsDeleted: ${item.aids_name} =>${response.message ?? ""}");
           if(message!=null)message(response.message);
         }
       } else {
-        print("uploadProjectWithPersons: ${item.aids_name} =>Response Error");
+        print("uploadProjectWithPersonsDeleted: ${item.aids_name} =>Response Error");
         if(message!=null)message("Response Error");
       }
       }else{
-        print("uploadProjectWithPersons: ${item.aids_name} => No Found Data");
+        print("uploadProjectWithPersonsDeleted: ${item.aids_name} => No Found Data");
         if(message!=null)message("No Found Data Fo upload");
       }
     } catch (error) {
-      print("uploadProjectWithPersons: ${item.aids_name} =>${error.toString()}");
+      print("uploadProjectWithPersonsDeleted: ${item.aids_name} =>${error.toString()}");
       if(message!=null)message(error.toString());
     }
   }

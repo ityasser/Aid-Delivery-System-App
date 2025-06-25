@@ -42,7 +42,7 @@ class Person extends Identifiable {
     mobile = json['person_mob_1'] as String?;
     isReceived = (json['aid_person_status_rec']?.toString() == "1");
     receivedTime= json['received_time'] as String?;
-    isDeleted= json['is_deleted'] as String?;
+    isDeleted = (json['is_deleted'] as bool?) ?? false;
 
   }
 

@@ -37,7 +37,7 @@ class AidNotifier extends ListNotifier<Person> {
     print("toggleReceived $value");
     item.isReceived = value;
     item.note = note;
-    ObjectBox.instance.updatePerson(item,project);
+    ObjectBox.instance.updatePerson(item,project?.object_id);
     updateItem(item);
   }
 

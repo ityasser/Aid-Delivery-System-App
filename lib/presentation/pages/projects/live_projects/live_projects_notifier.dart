@@ -44,7 +44,7 @@ class LiveProjectsNotifier extends ListNotifier<Project>
 
     apiPersons.forEach((person) {
       // print(jsonEncode(person.toJson()));
-       ObjectBox.instance.updatePerson(person, project);
+       ObjectBox.instance.updatePerson(person, project.object_id);
     });
   }
 
