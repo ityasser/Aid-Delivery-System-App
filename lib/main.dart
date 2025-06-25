@@ -12,6 +12,7 @@ import 'databse/objectbox_database.dart';
 
 
 
+
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await UserPreferences.initPreferences();
