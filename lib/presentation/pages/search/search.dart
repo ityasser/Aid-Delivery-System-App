@@ -24,6 +24,7 @@ class SearchPage extends ConsumerWidget {
   final TextEditingController searchController = TextEditingController(
     text: "",
   );
+
   final FocusNode _focusNode = FocusNode();
 
   late SearchAidController personController;
