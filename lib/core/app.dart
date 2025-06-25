@@ -12,7 +12,7 @@ import '../presentation/pages/main/MainScreen.dart';
 import '../presentation/scan/scan_id.dart';
 import '../presentation/scan/scan_id_screen.dart';
 import 'constant/share_pref.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:aid_registry_flutter_app/l10n/app_localizations.dart';
 
 import 'theme/color.dart';
 import 'theme/founts.dart';

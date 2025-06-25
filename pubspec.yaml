@@ -126,7 +126,6 @@ flutter:
   assets:
     - assets/images/
     - assets/fonts/
-    - assets/l10n/
 
   # To add assets to your application, add an assets section, like this:
   # assets:

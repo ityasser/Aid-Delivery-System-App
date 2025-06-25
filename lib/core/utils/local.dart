@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../app.dart';
 import '../constant/share_pref.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:aid_registry_flutter_app/l10n/app_localizations.dart';
 import 'user_preference.dart';
 
 class AppLocal{
