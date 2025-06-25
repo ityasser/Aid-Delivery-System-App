@@ -21,6 +21,9 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+          - name: Generate localization files
+            run: flutter gen-l10n
+
       # Decode the keystore file from base64
       - name: Decode keystore
         run: |
@@ -72,6 +75,9 @@ jobs:
 
       - name: Install dependencies
         run: flutter pub get
+
+      - name: Generate localization files
+        run: flutter gen-l10n
 
       - name: Build EXE
         run: flutter build windows
