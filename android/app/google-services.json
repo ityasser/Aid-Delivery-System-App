@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "104959127186",
+    "project_id": "aid-delivery-system",
+    "storage_bucket": "aid-delivery-system.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:104959127186:android:e03332c7cff1fcbbe0804b",
+        "android_client_info": {
+          "package_name": "aid_registry.mosd.gov.ps"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBGZ22l1u7usFZty7pEOHCDTmpa7jtlMSA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
