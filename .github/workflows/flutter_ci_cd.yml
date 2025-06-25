@@ -41,14 +41,6 @@ jobs:
       - name: Build APK
         run: flutter build apk --release
 
-      # Upload APK to Firebase App Distribution
-      - name: Upload to Firebase App Distribution
-        uses: wzieba/Firebase-Distribution-Github-Action@v1
-        with:
-          appId: ${{ secrets.FIREBASE_APP_ID }}
-          serviceCredentialsFileContent: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-          file: build/app/outputs/flutter-apk/app-release.apk
-          groups: testers
 
       # Upload APK to GitHub Releases
       - name: Upload APK to GitHub Releases
@@ -58,6 +50,16 @@ jobs:
           tag: release-${{ github.run_number }}
           name: Android Release ${{ github.run_number }}
           token: ${{ secrets.GITHUB_TOKEN }}
+
+      # Upload APK to Firebase App Distribution
+      - name: Upload to Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{ secrets.FIREBASE_APP_ID }}
+          serviceCredentialsFileContent: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          file: build/app/outputs/flutter-apk/app-release.apk
+          releaseNotes: "Automated CI/CD Release"
+
 
   build-windows:
     name: Build & Deploy Windows EXE
