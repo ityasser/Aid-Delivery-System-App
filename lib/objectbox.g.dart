@@ -82,7 +82,7 @@ final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
       id: const obx_int.IdUid(7, 6738862773154263558),
       name: 'PersonDB',
-      lastPropertyId: const obx_int.IdUid(15, 2033265498118803335),
+      lastPropertyId: const obx_int.IdUid(16, 986629897929784874),
       flags: 0,
       properties: <obx_int.ModelProperty>[
         obx_int.ModelProperty(
@@ -149,6 +149,11 @@ final _entities = <obx_int.ModelEntity>[
             id: const obx_int.IdUid(15, 2033265498118803335),
             name: 'receivedTime',
             type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(16, 986629897929784874),
+            name: 'isDeleted',
+            type: 1,
             flags: 0)
       ],
       relations: <obx_int.ModelRelation>[],
@@ -345,7 +350,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
           final receivedTimeOffset = object.receivedTime == null
               ? null
               : fbb.writeString(object.receivedTime!);
-          fbb.startTable(16);
+          fbb.startTable(17);
           fbb.addInt64(0, object.id);
           fbb.addOffset(2, person_pidOffset);
           fbb.addOffset(3, person_fnameOffset);
@@ -359,6 +364,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
           fbb.addInt64(12, object.aid_person_id);
           fbb.addInt64(13, object.project_id);
           fbb.addOffset(14, receivedTimeOffset);
+          fbb.addBool(15, object.isDeleted);
           fbb.finish(fbb.endTable());
           return object.id;
         },
@@ -390,7 +396,9 @@ obx_int.ModelDefinition getObjectBoxModel() {
             ..project_id =
                 const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 30)
             ..receivedTime = const fb.StringReader(asciiOptimization: true)
-                .vTableGetNullable(buffer, rootOffset, 32);
+                .vTableGetNullable(buffer, rootOffset, 32)
+            ..isDeleted =
+                const fb.BoolReader().vTableGet(buffer, rootOffset, 34, false);
 
           return object;
         })
@@ -495,4 +503,8 @@ class PersonDB_ {
   /// See [PersonDB.receivedTime].
   static final receivedTime =
       obx.QueryStringProperty<PersonDB>(_entities[1].properties[12]);
+
+  /// See [PersonDB.isDeleted].
+  static final isDeleted =
+      obx.QueryBooleanProperty<PersonDB>(_entities[1].properties[13]);
 }

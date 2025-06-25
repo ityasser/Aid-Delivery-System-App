@@ -45,6 +45,8 @@ class SearchAidController extends Notifier<SearchState> with Helpers {
     Person personWithProject = ObjectBox.instance.getPersonByIDAndProject(item.person_pid, project.object_id);
     personWithProject.isReceived = value;
     personWithProject.receivedTime = item.receivedTime;
+    personWithProject.isDeleted=true;
+
     ObjectBox.instance.removePerson(personWithProject, project);
     updateLocalProjects();
   }

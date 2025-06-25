@@ -88,12 +88,42 @@ class SyncService {
       if(message!=null)message(error.toString());
     }
   }
+static Future<void> uploadDeletedPersonByProject(Project item,{Function(String? note)? message}) async {
+    try {
+      List<Map<String, dynamic>> json = ObjectBox.instance.getPersonsByProjectAndReceived(item.object_id ?? 0);
+      print("uploadProjectWithPersons: ${item.aids_name} =>$json");
+      if(json.isNotEmpty){
+      BaseResponse? response = await Apis().uploadPersons({"data": jsonEncode(json)});
+      if (response != null) {
+        if (response.status!) {
+          print("uploadProjectWithPersons: ${item.aids_name} =>${response.message ?? ""}");
+          // ObjectBox.instance.deletePersonsReceivedInProject(item.object_id!);
+          print("uploadProjectWithPersons: ${item.aids_name} =>delete Persons In Project");
+          if(message!=null)message(response.message);
+        } else {
+          print("uploadProjectWithPersons: ${item.aids_name} =>${response.message ?? ""}");
+          if(message!=null)message(response.message);
+        }
+      } else {
+        print("uploadProjectWithPersons: ${item.aids_name} =>Response Error");
+        if(message!=null)message("Response Error");
+      }
+      }else{
+        print("uploadProjectWithPersons: ${item.aids_name} => No Found Data");
+        if(message!=null)message("No Found Data Fo upload");
+      }
+    } catch (error) {
+      print("uploadProjectWithPersons: ${item.aids_name} =>${error.toString()}");
+      if(message!=null)message(error.toString());
+    }
+  }
 
   static Future<void> syncData()async {
    List<Project> projects=ObjectBox.instance.getAllProjects();
    for (var project in projects) {
      await uploadPersonByProject(project);
      await downloadPersonByProject(project);
+     await uploadDeletedPersonByProject(project);
    }
   }
 }

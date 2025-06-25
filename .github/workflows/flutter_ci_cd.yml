@@ -49,7 +49,7 @@ jobs:
           artifacts: build/app/outputs/flutter-apk/app-release.apk
           tag: release-${{ github.run_number }}
           name: Android Release ${{ github.run_number }}
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GH_RELEASE_TOKEN }}
 
       # Upload APK to Firebase App Distribution
       - name: Upload to Firebase App Distribution
@@ -59,6 +59,8 @@ jobs:
           serviceCredentialsFileContent: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
           file: build/app/outputs/flutter-apk/app-release.apk
           releaseNotes: "Automated CI/CD Release"
+          testers: "ity5sser@gmail.com"
+
 
 
   build-windows:
@@ -87,7 +89,7 @@ jobs:
       - name: Upload EXE to GitHub Releases
         uses: svenstaro/upload-release-action@v2
         with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          repo_token: ${{ secrets.GH_RELEASE_TOKEN }}
           file: build/windows/runner/Release/*.exe
           tag: release-${{ github.run_number }}
           overwrite: true

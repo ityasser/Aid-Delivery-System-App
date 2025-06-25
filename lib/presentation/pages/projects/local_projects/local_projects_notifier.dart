@@ -203,6 +203,9 @@ class LocalProjectsNotifier extends ListNotifier<Project>
     SyncService.downloadPersonByProject(project,message: (note){
       showMessage(note??"",error: false);
     });
+    SyncService.uploadDeletedPersonByProject(project,message: (note){
+      showMessage(note??"",error: false);
+    });
     dismissLoading();
 
     // uploadProjectWithPersons(project);

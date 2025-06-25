@@ -207,7 +207,7 @@ class SearchPage extends ConsumerWidget {
                                   for (var project
                                       in searchState.selectedProjects) {
                                     searchState.person!.receivedTime =
-                                        null; //DateFormat('yyyy-MM-dd HH:mm:ss',).format(DateTime.now());
+                                        DateFormat('yyyy-MM-dd HH:mm:ss',).format(DateTime.now());
                                     personController.removeAid(
                                       searchState.person!,
                                       project,

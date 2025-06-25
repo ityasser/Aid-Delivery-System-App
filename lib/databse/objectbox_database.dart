@@ -203,6 +203,12 @@ class ObjectBox {
         .where((p) =>p.project_id==projectId && p.isReceived==true)
         .toList();
     return convertToPersonsList(list);
+  } List<Person> getPersonsByAidManageIdDeleted(int projectId) {
+    List<PersonDB> list= ObjectBox.instance.personBox
+        .getAll()
+        .where((p) =>p.project_id==projectId && p.isDeleted==true)
+        .toList();
+    return convertToPersonsList(list);
   }
   List<Person> getPersonsByAidManageIdAndNotReceived(int projectId) {
     List<PersonDB> list= ObjectBox.instance.personBox
@@ -226,6 +232,16 @@ class ObjectBox {
       "id": person.object_id, // استخدام Object ID
       "title": person.note??"", // استخدام الملاحظة
       "received_time": person.receivedTime??"", // استخدام الملاحظة
+    }).toList();
+  }
+ List<Map<String, dynamic>> getPersonsByProjectDeleted(int projectId) {
+
+    List<Person> list = getPersonsByAidManageIdDeleted(projectId);
+
+    return list.map((person) => {
+      "id": person.object_id, // استخدام Object ID
+      "title": person.note??"", // استخدام الملاحظة
+      "received_time": person.receivedTime, // استخدام الملاحظة
     }).toList();
   }
 
@@ -294,6 +310,7 @@ void  updatePerson(Person apiPerson, Project? project) {
       }
 
         existingPerson.receivedTime = apiPerson.receivedTime;
+        existingPerson.isDeleted = apiPerson.isDeleted;
 
 
       print("receivedTime: ${existingPerson.isReceived??""}");

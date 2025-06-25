@@ -22,7 +22,9 @@ class PersonDB  {
   String? note;
   String? mobile;
   bool isReceived = false;
+  bool isDeleted = false;
   String? receivedTime;
+
 
   get fullName {
     return "$person_fname $person_sname $person_tname $person_lname";
@@ -42,6 +44,7 @@ class PersonDB  {
     mobile = json['person_mob_1'] as String?;
     isReceived = (json['aid_person_status_rec']?.toString() == "1");
     receivedTime = json['received_time'] as String?;
+    isDeleted = json['is_deleted'] as String?;
 
   }
 
@@ -62,7 +65,8 @@ class PersonDB  {
     json['person_lname'] =person_lname ;
     json['aid_person_status_rec'] =isReceived ? "1" : "0" ;
     json['project_id'] =project_id ;
-    json['received_time'] =receivedTime ;
+    json['is_deleted'] =isDeleted ;
+
 
     return json;
   }
