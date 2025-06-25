@@ -5,64 +5,6 @@ on:
     branches: [ master ]
 
 jobs:
-#  build-android:
-#    name: Build & Deploy Android APK
-#    runs-on: ubuntu-latest
-#
-#    steps:
-#      - name: Checkout code
-#        uses: actions/checkout@v3
-#
-#      - name: Set up Flutter
-#        uses: subosito/flutter-action@v2
-#        with:
-#          flutter-version: '3.32.4'
-#
-#      - name: Install dependencies
-#        run: flutter pub get
-#
-#      - name: Generate localization files
-#        run: flutter gen-l10n
-#
-#      # Decode the keystore file from base64
-#      - name: Decode keystore
-#        run: |
-#          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > android/app/upload-keystore.jks
-#
-#      # Generate key.properties file
-#      - name: Create key.properties
-#        run: |
-#          echo "storePassword=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" > android/key.properties
-#          echo "keyPassword=${{ secrets.ANDROID_KEY_PASSWORD }}" >> android/key.properties
-#          echo "keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}" >> android/key.properties
-#          echo "storeFile=upload-keystore.jks" >> android/key.properties
-#
-#      # Build the signed APK
-#      - name: Build APK
-#        run: flutter build apk --release
-#
-#
-#      # Upload APK to GitHub Releases
-#      - name: Upload APK to GitHub Releases
-#        uses: ncipollo/release-action@v1
-#        with:
-#          artifacts: build/app/outputs/flutter-apk/app-release.apk
-#          tag: release-${{ github.run_number }}
-#          name: Android Release ${{ github.run_number }}
-#          token: ${{ secrets.GH_RELEASE_TOKEN }}
-#
-#      # Upload APK to Firebase App Distribution
-#      - name: Upload to Firebase App Distribution
-#        uses: wzieba/Firebase-Distribution-Github-Action@v1
-#        with:
-#          appId: ${{ secrets.FIREBASE_APP_ID }}
-#          serviceCredentialsFileContent: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-#          file: build/app/outputs/flutter-apk/app-release.apk
-#          releaseNotes: "Automated CI/CD Release"
-#          testers: "ity5sser@gmail.com"
-
-
-
   build-windows:
     name: Build & Deploy Windows EXE
     runs-on: windows-latest
@@ -93,3 +35,59 @@ jobs:
           file: build/windows/x64/runner/Release/aid_registry_flutter_app.exe
           tag: release-${{ github.run_number }}
           overwrite: true
+
+  build-android:
+    name: Build & Deploy Android APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.32.4'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Generate localization files
+        run: flutter gen-l10n
+
+      # Decode the keystore file from base64
+      - name: Decode keystore
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > android/app/upload-keystore.jks
+
+      # Generate key.properties file
+      - name: Create key.properties
+        run: |
+          echo "storePassword=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" > android/key.properties
+          echo "keyPassword=${{ secrets.ANDROID_KEY_PASSWORD }}" >> android/key.properties
+          echo "keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}" >> android/key.properties
+          echo "storeFile=upload-keystore.jks" >> android/key.properties
+
+      # Build the signed APK
+      - name: Build APK
+        run: flutter build apk --release
+
+
+      # Upload APK to GitHub Releases
+      - name: Upload APK to GitHub Releases
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: build/app/outputs/flutter-apk/app-release.apk
+          tag: release-${{ github.run_number }}
+          name: Android Release ${{ github.run_number }}
+          token: ${{ secrets.GH_RELEASE_TOKEN }}
+
+      # Upload APK to Firebase App Distribution
+      - name: Upload to Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{ secrets.FIREBASE_APP_ID }}
+          serviceCredentialsFileContent: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          file: build/app/outputs/flutter-apk/app-release.apk
+          releaseNotes: "Automated CI/CD Release"
+          testers: "ity5sser@gmail.com"
