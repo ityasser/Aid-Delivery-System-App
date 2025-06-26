@@ -34,7 +34,7 @@ jobs:
           echo "NSIS installed."
 
       - name: Build installer using NSIS
-        run: makensis installer_script.nsi
+        run: makensis nsis/installer_script.nsi
 
       - name: Extract version
         id: version
