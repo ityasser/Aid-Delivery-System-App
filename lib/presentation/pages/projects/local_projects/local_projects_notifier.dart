@@ -199,12 +199,18 @@ class LocalProjectsNotifier extends ListNotifier<Project>
     showLoading();
     SyncService.uploadPersonByProject(project, message: (note){
       showMessage(note??"",error: false);
+      refreshListLocalProjects();
+
     });
     SyncService.downloadPersonByProject(project,message: (note){
       showMessage(note??"",error: false);
+      refreshListLocalProjects();
+
     });
     SyncService.uploadDeletedPersonByProject(project,message: (note){
       showMessage(note??"",error: false);
+      refreshListLocalProjects();
+
     });
     dismissLoading();
 
@@ -214,7 +220,14 @@ class LocalProjectsNotifier extends ListNotifier<Project>
     // );
     // liveProjectsNotifier.downloadPersonByProject(project.object_id);
   }
-
+  refreshListLocalProjects() {
+    print("updateLocalProjects");
+    LocalProjectsNotifier localProjectNotifier = ref.read(
+      localProjectsProvider.notifier,
+    );
+    // localProjectNotifier.fetchData(0);
+    localProjectNotifier.refreshList();
+  }
   Future<void> exportPersonsToExcelNotReceived(Project project) async {
     if (await requestStoragePermission() == false) {
       showMessage("لا يوجد صلاحيات");

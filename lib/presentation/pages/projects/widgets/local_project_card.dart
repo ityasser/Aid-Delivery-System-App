@@ -27,15 +27,21 @@ class LocalProjectCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Card(
+    return Card(
 
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        elevation: 4,
-        margin: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+      color: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      elevation: 4,
+      margin: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+      child: InkWell(
+
+        onTap: onTap,
+        hoverColor: Colors.grey.withOpacity(0.1),
+
+        borderRadius: BorderRadius.circular(16),
+        radius:16 ,
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -68,18 +74,18 @@ class LocalProjectCard extends StatelessWidget {
 
               SizedBox(height: 16.h),
 
-    LayoutBuilder(
-    builder: (context, constraints) {
-    double maxWidth = constraints.maxWidth;
-    double minButtonWidth = 220;
-    // int columns = (maxWidth / minButtonWidth).floor().clamp(1, 6);
-    int columns = (constraints.maxWidth / 250).floor().clamp(1, 3);
+          LayoutBuilder(
+          builder: (context, constraints) {
+          double maxWidth = constraints.maxWidth;
+          double minButtonWidth = 220;
+          // int columns = (maxWidth / minButtonWidth).floor().clamp(1, 6);
+          int columns = (constraints.maxWidth / 250).floor().clamp(1, 3);
 
-    double spacing = 12.w;
-    double computedWidth = (constraints.maxWidth - (columns - 1) * spacing) / columns;
-    // double computedWidth = (maxWidth - ((columns - 1) * spacing)) / columns;
+          double spacing = 12.w;
+          double computedWidth = (constraints.maxWidth - (columns - 1) * spacing) / columns;
+          // double computedWidth = (maxWidth - ((columns - 1) * spacing)) / columns;
 
-      return Wrap(
+            return Wrap(
         alignment: WrapAlignment.spaceBetween,
                   spacing: spacing,
                   runSpacing: 10.h,
@@ -132,7 +138,7 @@ class LocalProjectCard extends StatelessWidget {
                     ),
                   ],
                 );
-    }
+          }
               )
               ,
              /* Row(

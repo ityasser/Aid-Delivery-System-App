@@ -28,44 +28,6 @@ jobs:
       - name: Build EXE
         run: flutter build windows --release
 
-      - name: Download and install NSIS
-        run: |
-          choco install nsis -y
-          echo "NSIS installed."
-
-      - name: Build installer using NSIS
-        run: makensis nsis/installer_script.nsi
-
-      - name: Extract version
-        id: version
-        run: |
-          $pubspec = Get-Content pubspec.yaml
-          $versionLine = $pubspec | Where-Object { $_ -match '^version:' }
-          $version = $versionLine -replace 'version:\s*', '' -replace '\+.*', ''
-          echo "version=$version" >> $env:GITHUB_OUTPUT
-
-      - name: Create version.json
-        run: |
-          $json = @"
-          {
-            "latest": "${{ steps.version.outputs.version }}",
-            "url": "https://github.com/${{ github.repository }}/releases/download/v${{ steps.version.outputs.version }}/Installer-${{ steps.version.outputs.version }}.exe"
-          }
-          "@
-          $json | Out-File version.json -Encoding utf8
-
-      - name: Upload release with installer and version.json
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: v${{ steps.version.outputs.version }}
-          name: Release v${{ steps.version.outputs.version }}
-          files: |
-            version.json
-            build/windows/runner/Release/*.exe
-            Installer-${{ steps.version.outputs.version }}.exe
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Compress Windows Release Folder
         run: |
           powershell Compress-Archive `-Path build/windows/x64/runner/Release/*` -DestinationPath build/windows/x64/runner/app-windows-release.zip
