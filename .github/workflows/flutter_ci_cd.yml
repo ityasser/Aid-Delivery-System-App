@@ -26,15 +26,29 @@ jobs:
         run: flutter gen-l10n
 
       - name: Build EXE
-        run: flutter build windows
+        run: flutter build windows --release
 
-      - name: Upload EXE to GitHub Releases
+      - name: Compress Windows Release Folder
+        run: |
+          powershell Compress-Archive `-Path build/windows/x64/runner/Release/*` -DestinationPath build/windows/x64/runner/app-windows-release.zip
+
+      - name: Upload ZIP to GitHub Releases
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GH_RELEASE_TOKEN }}
-          file: build/windows/x64/runner/Release/aid_registry_flutter_app.exe
+          file: build/windows/x64/runner/app-windows-release.zip
+          asset_name: app-windows-release.zip
           tag: release-${{ github.run_number }}
           overwrite: true
+
+# EXE Only
+#      - name: Upload EXE to GitHub Releases
+#        uses: svenstaro/upload-release-action@v2
+#        with:
+#          repo_token: ${{ secrets.GH_RELEASE_TOKEN }}
+#          file: build/windows/x64/runner/Release/aid_registry_flutter_app.exe
+#          tag: release-${{ github.run_number }}
+#          overwrite: true
 
   build-android:
     name: Build & Deploy Android APK
