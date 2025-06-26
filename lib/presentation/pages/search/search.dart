@@ -48,6 +48,7 @@ class SearchPage extends ConsumerWidget {
             children: [
               SizedBox(height: 20.h),
 
+              Text("sdfsdf"),
               Center(
                 child: Row(
                   children: [

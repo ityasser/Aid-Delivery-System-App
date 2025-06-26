@@ -28,6 +28,30 @@ jobs:
       - name: Build EXE
         run: flutter build windows --release
 
+      - name: Install NSIS
+        run: choco install nsis -y
+
+      - name: Get version from tag
+        id: version
+        run: |
+          echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
+
+      - name: Replace version in installer_script.nsi
+        run: |
+          $content = Get-Content 'installer_script.nsi'
+          $updated = $content -replace '!define VERSION ".*"', '!define VERSION "${{ env.VERSION }}"'
+          $updated | Set-Content 'installer_script.nsi'
+
+      - name: Make installer using NSIS
+        run: makensis installer_script.nsi
+
+      - name: Upload to GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: AidRegistryInstaller.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Compress Windows Release Folder
         run: |
           powershell Compress-Archive `-Path build/windows/x64/runner/Release/*` -DestinationPath build/windows/x64/runner/app-windows-release.zip
