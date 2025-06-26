@@ -1,4 +1,4 @@
-!define VERSION "1.2.0"
+!define VERSION "1.2.0.0"
 
 !define APP_NAME "Aid Registry App"
 

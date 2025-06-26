@@ -31,15 +31,16 @@ jobs:
       - name: Install NSIS
         run: choco install nsis -y
 
-      - name: Get version from tag
-        id: version
+
+      - name: Set VERSION based on GitHub run number
         run: |
-          echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
+          echo "VERSION=${{ github.run_number }}" >> $env:GITHUB_ENV
+          echo "VERSION4=${{ github.run_number }}.0" >> $env:GITHUB_ENV
 
       - name: Replace version in installer_script.nsi
         run: |
           $content = Get-Content 'installer_script.nsi'
-          $updated = $content -replace '!define VERSION ".*"', '!define VERSION "${{ env.VERSION }}"'
+          $updated = $content -replace '!define VERSION ".*"', '!define VERSION "${{ env.VERSION4 }}"'
           $updated | Set-Content 'installer_script.nsi'
 
       - name: Make installer using NSIS
