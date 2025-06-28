@@ -51,7 +51,10 @@ jobs:
       - name: Upload to GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          files: AidRegistryInstaller.exe
+          file: AidSystemSetup-${{ env.VERSION }}.exe
+          repo_token: ${{ secrets.GH_RELEASE_TOKEN }}
+          tag: release-${{ github.run_number }}
+          overwrite: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

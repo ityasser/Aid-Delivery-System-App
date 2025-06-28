@@ -2,7 +2,7 @@
 
 !define APP_NAME "Aid Registry App"
 
-!define INSTALLER_NAME "AidRegistrySetup-${VERSION}.exe"
+!define INSTALLER_NAME "AidSystemSetup-${VERSION}.exe"
 
 OutFile "${INSTALLER_NAME}"
 InstallDir "$PROGRAMFILES64\${APP_NAME}"
