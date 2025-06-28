@@ -48,8 +48,8 @@ jobs:
       - name: Make installer using NSIS
         run: makensis installer_script.nsi
 
-      - name: Upload to GitHub Release
-        uses: softprops/action-gh-release@v1
+      - name: Upload Installer to GitHub Release
+        uses: svenstaro/upload-release-action@v2
         with:
           file: AidSystemSetup-${{ env.VERSION }}.exe
           repo_token: ${{ secrets.GH_RELEASE_TOKEN }}
