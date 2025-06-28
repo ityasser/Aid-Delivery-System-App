@@ -34,14 +34,16 @@ jobs:
 
       - name: Set VERSION based on GitHub run number
         run: |
-          echo "VERSION=${{ github.run_number }}" >> $env:GITHUB_ENV
-          echo "VERSION4=${{ github.run_number }}.0" >> $env:GITHUB_ENV
+          $build = "${{ github.run_number }}"
+          $version = "2.1.$build.0" 
+          echo "VERSION=$version" >> $env:GITHUB_ENV
 
       - name: Replace version in installer_script.nsi
         run: |
-          $content = Get-Content 'installer_script.nsi'
-          $updated = $content -replace '!define VERSION ".*"', '!define VERSION "${{ env.VERSION4 }}"'
-          $updated | Set-Content 'installer_script.nsi'
+          (Get-Content 'installer_script.nsi') `
+            -replace '!define VERSION ".*"', '!define VERSION "${{ env.VERSION }}"' `
+          | Set-Content 'installer_script.nsi'
+
 
       - name: Make installer using NSIS
         run: makensis installer_script.nsi
