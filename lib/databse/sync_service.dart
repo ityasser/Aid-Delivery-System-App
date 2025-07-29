@@ -36,7 +36,7 @@ class SyncService {
             print("downloadPersonByProject: ${item.aids_name} =>persons length : ${persons.length}");
 
             for (var person in persons) {
-              ObjectBox.instance.updatePerson(person, project.object_id);
+              ObjectBox.instance.updatePersonDownload(person, project.object_id);
             }
             print("downloadPersonByProject: ${item.aids_name} =>${response.message ?? ""}");
             if(message!=null)message(response.message);
@@ -59,7 +59,7 @@ class SyncService {
     }
   }
 
-  static Future<void> uploadPersonByProject(Project item,{Function(String? note)? message}) async {
+  static Future<bool> uploadPersonByProject(Project item,{Function(String? note)? message}) async {
     try {
       List<Map<String, dynamic>> json = ObjectBox.instance.getPersonsByProjectAndReceived(item.object_id ?? 0);
       print("uploadProjectWithPersons: ${item.aids_name} =>$json");
@@ -71,21 +71,28 @@ class SyncService {
           // ObjectBox.instance.deletePersonsReceivedInProject(item.object_id!);
           print("uploadProjectWithPersons: ${item.aids_name} =>delete Persons In Project");
           if(message!=null)message(response.message);
+          return true;
         } else {
           print("uploadProjectWithPersons: ${item.aids_name} =>${response.message ?? ""}");
           if(message!=null)message(response.message);
+          return false;
         }
       } else {
+
         print("uploadProjectWithPersons: ${item.aids_name} =>Response Error");
         if(message!=null)message("Response Error");
+        return false;
+
       }
       }else{
         print("uploadProjectWithPersons: ${item.aids_name} => No Found Data");
         if(message!=null)message("No Found Data Fo upload");
+        return true;
       }
     } catch (error) {
       print("uploadProjectWithPersons: ${item.aids_name} =>${error.toString()}");
       if(message!=null)message(error.toString());
+      return false;
     }
   }
 static Future<void> uploadDeletedPersonByProject(Project item,{Function(String? note)? message}) async {
@@ -123,9 +130,11 @@ static Future<void> uploadDeletedPersonByProject(Project item,{Function(String? 
   static Future<void> syncData()async {
    List<Project> projects=ObjectBox.instance.getAllProjects();
    for (var project in projects) {
-     await uploadPersonByProject(project);
-     await downloadPersonByProject(project);
      await uploadDeletedPersonByProject(project);
+     bool status=await uploadPersonByProject(project);
+     if(status)
+       await downloadPersonByProject(project);
+     //
    }
   }
 }

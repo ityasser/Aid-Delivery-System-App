@@ -65,9 +65,7 @@ class SearchPage extends ConsumerWidget {
                         onFieldSubmitted: (value) {
                           final now = DateTime.now();
                           // إذا تم الضغط مرتين خلال فترة قصيرة
-                          if (_lastEnterTime != null &&
-                              now.difference(_lastEnterTime!) <
-                                  _enterThreshold) {
+                          if (_lastEnterTime != null && now.difference(_lastEnterTime!) < _enterThreshold) {
                             print("Double press: تنفيذ التسليم والطباعة");
 
                             for (var project in searchState.selectedProjects) {
@@ -77,28 +75,23 @@ class SearchPage extends ConsumerWidget {
                                     project.object_id,
                                   );
                             }
-                            if (personController.hasAnyPersonNotReceived(
-                              searchState.person!.person_pid,
-                            )) {
+                            if (personController.hasAnyPersonNotReceived(searchState.person!.person_pid,)) {
                               USBPrinterService u = USBPrinterService();
-                              u.printReceipt(
-                                searchState.person!,
-                                personController.getProjectByPerson(
-                                  searchState.person,
-                                ),
-                              );
+                              u.printReceipt(searchState.person!, personController.getProjectByPerson(searchState.person,),);
                             }
                             for (var project in searchState.selectedProjects) {
                               print("action search: toggleReceived");
                               print(
                                 "action search: toggleReceived  ${searchState.person!.toJson()}",
                               );
-                              personController.toggleReceived(
+                              if(!personController.checkIsReceivedWithProjectAndPerson(searchState.person!.person_pid, project.object_id)) {
+                                personController.toggleReceived(
                                 person_pid: searchState.person!.person_pid,
                                 project_id: project.object_id,
                                 value: true,
                                 note: "",
                               );
+                              }
                             }
 
                             searchController.text = "";

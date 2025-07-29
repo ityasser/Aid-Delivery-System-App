@@ -1,6 +1,8 @@
 import 'package:aid_registry_flutter_app/core/utils/extension.dart';
+import 'package:aid_registry_flutter_app/core/utils/user_preference.dart';
 import 'package:intl/intl.dart';
 import 'package:objectbox/objectbox.dart';
+import 'package:path_provider/path_provider.dart';
 import '../data/person_db.dart';
 import '../data/project_db.dart';
 import '../objectbox.g.dart';
@@ -8,7 +10,7 @@ import '../data/person.dart';
 import '../data/project.dart';
 
 class ObjectBox {
-  static late final ObjectBox _instance;
+  static  ObjectBox? _instance;
   late final Store store;
   late final Box<ProjectDB> projectBox;
   late final Box<PersonDB> personBox;
@@ -19,11 +21,27 @@ class ObjectBox {
   }
 
   static Future<void> init() async {
-    final store = await openStore();
+
+
+    if (_instance != null) {
+      _instance?.store.close();
+    }
+
+    final dir=await getApplicationDocumentsDirectory();
+
+    print("dir-database: $dir");
+    final userDbPath = '${dir.path}/objectbox_${UserPreferences().store}';
+
+    // فتح الـ Store من هذا المسار
+    final store = await openStore(directory: userDbPath);
+
+    // final store = await openStore();
+
     _instance = ObjectBox._create(store);
+
   }
 
-  static ObjectBox get instance => _instance;
+  static ObjectBox get instance => _instance!;
 
   static void clearAll() {
     ObjectBox.instance.projectBox.removeAll();
@@ -206,6 +224,19 @@ class ObjectBox {
     return convertToPersonsList(list);
   }
 
+  bool checkIsReceivedWithProjectAndPerson(String? pid, int? projectId) {
+    if (pid == null || projectId == null) return false;
+    final query = ObjectBox.instance.personBox.query(
+        PersonDB_.person_pid.equals(pid) &
+        PersonDB_.project_id.equals(projectId) &
+        PersonDB_.isReceived.equals(true)
+    ).build();
+
+    final result = query.findFirst();
+    query.close();
+
+    return result != null;
+  }
   List<Person> getAllPersonById(String? pid) {
     final query =
         ObjectBox.instance.personBox
@@ -314,23 +345,73 @@ class ObjectBox {
       // existingPerson.person_lname = apiPerson.person_lname;
       // existingPerson.date = apiPerson.date;
       // existingPerson.mobile = apiPerson.mobile;
+
       if (apiPerson.note != null && apiPerson.note!.isNotEmpty) {
         existingPerson.note = apiPerson.note;
       }
+
 
       if (apiPerson.isReceived != existingPerson.isReceived) {
         existingPerson.isReceived = apiPerson.isReceived;
       }
 
-      print("receivedTimexxxxx: ${apiPerson.receivedTime}");
-      print(
-        "receivedTimexxxxx: ${(apiPerson.receivedTime != null && apiPerson.receivedTime!.isNotEmpty)}",
-      );
+      // print("receivedTimexxxxx: ${apiPerson.receivedTime}");
+      // print(
+      //   "receivedTimexxxxx: ${(apiPerson.receivedTime != null && apiPerson.receivedTime!.isNotEmpty)}",
+      // );
       if (apiPerson.receivedTime != null &&
           apiPerson.receivedTime!.isNotEmpty) {
         existingPerson.receivedTime = apiPerson.receivedTime;
       }
 
+      if(apiPerson.person_pid=="804448801"){
+        print("Yasser.Kuhail");
+        print(apiPerson.toJson());
+      }
+      personBox.put(existingPerson);
+    } else {
+      PersonDB apiPersonDB = toPersonDB(apiPerson);
+      apiPersonDB.id = 0;
+
+      apiPersonDB.project_id = object_id;
+      personBox.put(apiPersonDB);
+    }
+  }
+  void updatePersonDownload(Person apiPerson, int? object_id) {
+    PersonDB? existingPerson = getPersonDB(apiPerson.object_id, object_id);
+    if (existingPerson != null) {
+      // print("existingPerson ${existingPerson.project_id} = ${apiPerson.project_id}");
+      // existingPerson.project_id = apiPerson.project_id;
+      // existingPerson.aid_person_id = apiPerson.object_id;
+      // existingPerson.person_pid = apiPerson.person_pid;
+      // existingPerson.person_fname = apiPerson.person_fname;
+      // existingPerson.person_sname = apiPerson.person_sname;
+      // existingPerson.person_tname = apiPerson.person_tname;
+      // existingPerson.person_lname = apiPerson.person_lname;
+      // existingPerson.date = apiPerson.date;
+      // existingPerson.mobile = apiPerson.mobile;
+
+      if (apiPerson.note != null && apiPerson.note!.isNotEmpty) {
+        existingPerson.note = apiPerson.note;
+      }
+
+
+        existingPerson.isReceived = apiPerson.isReceived;
+
+
+      // print("receivedTimexxxxx: ${apiPerson.receivedTime}");
+      // print(
+      //   "receivedTimexxxxx: ${(apiPerson.receivedTime != null && apiPerson.receivedTime!.isNotEmpty)}",
+      // );
+      if (apiPerson.receivedTime != null &&
+          apiPerson.receivedTime!.isNotEmpty) {
+        existingPerson.receivedTime = apiPerson.receivedTime;
+      }
+
+      if(apiPerson.person_pid=="804448801"){
+        print("Yasser.Kuhail");
+        print(apiPerson.toJson());
+      }
       personBox.put(existingPerson);
     } else {
       PersonDB apiPersonDB = toPersonDB(apiPerson);

@@ -82,6 +82,7 @@ class UserPreferences {
   String get language => getValue<String>(ConstantsSherPref.language) ?? Platform.localeName.substring(0, 2);
 
 
+  String get store => getValue<String>(ConstantsSherPref.store) ?? '';
 
   getBoolS(String key) {
     bool? boolValue = _prefs.getBool(key);

@@ -49,6 +49,12 @@ class LoginNotifier extends StateNotifier<ReqStatus>
             ConstantsSherPref.token,
             response.data?.hash ?? '',
           );
+
+          await UserPreferences().setValue(
+            ConstantsSherPref.store,
+            response.data?.store_id ?? '',
+          );
+
           await UserPreferences().setValue(ConstantsSherPref.isLogged, true);
 
           await UserPreferences().setValue(
@@ -59,6 +65,8 @@ class LoginNotifier extends StateNotifier<ReqStatus>
             ConstantsSherPref.password,
             passwordController.text,
           );
+          await ObjectBox.init();
+
           // ObjectBox.clearAll();
           dismissLoading();
           showMessage(response.message ?? "", error: false);

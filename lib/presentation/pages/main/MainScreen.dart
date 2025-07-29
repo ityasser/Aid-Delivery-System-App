@@ -49,6 +49,8 @@ class _MainScreenState extends ConsumerState<MainScreen>
             navBarState.changeAnimation(index);
       },
     );
+    ref.read(mainControllerProvider.notifier).syncNow();
+
     _syncTimer =Timer.periodic(Duration(minutes: 2), (timer) {
        ref.read(mainControllerProvider.notifier).syncNow();
 

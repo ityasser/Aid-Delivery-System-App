@@ -1,5 +1,6 @@
 class ConstantsSherPref{
   static const String isRememberPassword = "is_remember_me";
+  static const String store = "store_id";
   static const String token = "token";
   static const String language = "language_app";
   static const String sessionCountry = "session_country_app";

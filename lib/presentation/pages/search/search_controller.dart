@@ -57,6 +57,11 @@ class SearchAidController extends Notifier<SearchState> with Helpers {
 
     return persons.any((person) => !person.isReceived);
   }
+bool  checkIsReceivedWithProjectAndPerson(String? pid, int? projectId) {
+    return ObjectBox.instance.checkIsReceivedWithProjectAndPerson(pid, projectId);
+  }
+
+
 
   void searchByPid(String? pid) {
     state = SearchState.searching();
