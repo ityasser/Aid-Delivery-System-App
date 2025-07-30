@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:aid_registry_flutter_app/core/utils/auto_update.dart';
 import 'package:aid_registry_flutter_app/core/utils/helpers.dart';
 import 'package:aid_registry_flutter_app/core/utils/user_preference.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:aid_registry_flutter_app/core/customs/custom_button.dart';
 import 'package:aid_registry_flutter_app/presentation/shared/widgets/lists/list_general.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../../core/app.dart';
 import '../../../core/constant/imagepath.dart';
@@ -110,7 +112,7 @@ class _MainScreenState extends ConsumerState<MainScreen>
         ),
         actions: [
           PopupMenuButton<String>(
-            onSelected: (value) {
+            onSelected: (value) async {
               if (value == "logout") {
                 DialogService.showMessageDialog(
                   title: App.getString().logout,
@@ -154,11 +156,15 @@ class _MainScreenState extends ConsumerState<MainScreen>
                   },
                 );
               } else if (value == "about") {
+                final info = await PackageInfo.fromPlatform();
+                final currentVersion = info.version;
                 DialogService.showMessageDialog(
-                  // btnOkText: "تواصل",
-                  // btnOkOnPress: (n) {
+                   btnOkText: "تحديث",
+                   btnOkOnPress: (n) {
+                     checkForUpdates(context);
+
                   //  openWhatsApp("970594899524");
-                  // },
+                   },
                   body: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Column(
@@ -167,6 +173,14 @@ class _MainScreenState extends ConsumerState<MainScreen>
                         Center(
                           child: CustomText(
                             "عن التطبيق",
+                            color: Colors.black,
+                            fontFamily: Founts.medium,
+                          ),
+                        ),
+                        SizedBox(height: 10.h),
+                        Center(
+                          child: CustomText(
+                            currentVersion,
                             color: Colors.black,
                             fontFamily: Founts.medium,
                           ),

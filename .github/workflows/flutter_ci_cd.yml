@@ -71,6 +71,18 @@ jobs:
           tag: release-${{ github.run_number }}
           overwrite: true
 
+      - name: Create latest.json file
+        run: |
+          echo '{ "version": "${{ env.VERSION }}", "name": "Aid System", "url": "https://github.com/ityasser/Aid-Delivery-System-App/releases/download/release-${{ github.run_number }}/AidSystemSetup-${{ env.VERSION }}.exe" }' > latest.json
+
+      - name: Upload latest.json to GitHub Release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          file: latest.json
+          asset_name: latest.json
+          tag: release-${{ github.run_number }}
+          overwrite: true
+
 # EXE Only
 #      - name: Upload EXE to GitHub Releases
 #        uses: svenstaro/upload-release-action@v2

@@ -1,4 +1,5 @@
 import 'package:aid_registry_flutter_app/core/utils/app_wrapper.dart';
+import 'package:aid_registry_flutter_app/core/utils/auto_update.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -81,6 +82,8 @@ class Main extends ConsumerState<App> with SingleTickerProviderStateMixin {
     AppLocal.iniLocale();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       connectWifi();
+      checkForUpdates(context);
+
     });
   }
 
