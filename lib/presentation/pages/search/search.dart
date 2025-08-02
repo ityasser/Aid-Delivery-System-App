@@ -57,6 +57,7 @@ class SearchPage extends ConsumerWidget {
                         focusNode: _focusNode,
                         controller: searchController,
                         labelHint: "رقم الهوية",
+                        textAlign: TextAlign.center,
                         textInputType: TextInputType.number,
                         inputFormatters: <TextInputFormatter>[
                           FilteringTextInputFormatter.digitsOnly,
@@ -78,6 +79,11 @@ class SearchPage extends ConsumerWidget {
                             if (personController.hasAnyPersonNotReceived(searchState.person!.person_pid,)) {
                               USBPrinterService u = USBPrinterService();
                               u.printReceipt(searchState.person!, personController.getProjectByPerson(searchState.person,),);
+                            }else{
+                              personController.showMessage(
+                                "المستفيد تم استلامه سابقاً",
+                                error: true,
+                              );
                             }
                             for (var project in searchState.selectedProjects) {
                               print("action search: toggleReceived");
@@ -193,6 +199,7 @@ class SearchPage extends ConsumerWidget {
                                 labelNote: "الملاحظات",
                                 note: searchState.person?.note,
                                 btnOkText: "تأكيد",
+
                                 btnOkOnPress: (note) {
                                   print(searchState.selectedProjects);
                                   for (var project

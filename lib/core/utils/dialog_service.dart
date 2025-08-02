@@ -210,6 +210,30 @@ mixin DialogService {
       _loadingDialog = null;
     }
   }
+  static void showLoadingG() {
+    showGeneralDialog(
+      context: App.context,
+      barrierDismissible: false,
+      barrierColor: Colors.transparent,
+      transitionDuration: Duration(milliseconds: 300),
+      pageBuilder: (context, anim1, anim2) {
+        return WillPopScope(
+          onWillPop: () async => false,
+          child: Scaffold(
+            backgroundColor: Colors.transparent,
+            body: Center(
+              child: SpinKitSpinningLines(
+                color: ColorsUi.primary,
+                size: 100,
+                lineWidth: 5,
+                itemCount: 6,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   void dismissLoading() {
     if (_loadingDialog != null) {
@@ -227,6 +251,7 @@ mixin DialogService {
     String? labelNote,
     String? note,
     String? btnOkText,
+    String? btnCancelText,
   Widget? body,
     Function(String? note)? btnOkOnPress
   }) async {
@@ -278,7 +303,7 @@ mixin DialogService {
             ),
             buttonsTextStyle: TextStyle(height: 1.h,color: Colors.white),
             btnOkText: btnOkText,//??App.getString().confirm,
-            btnCancelText: App.getString().cancel,
+            btnCancelText:btnCancelText?? App.getString().cancel,
 
             btnOkOnPress: (btnOkOnPress!=null)?() =>btnOkOnPress(_noteController.text):null,
 

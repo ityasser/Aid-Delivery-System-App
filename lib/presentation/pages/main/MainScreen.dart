@@ -161,7 +161,7 @@ class _MainScreenState extends ConsumerState<MainScreen>
                 DialogService.showMessageDialog(
                    btnOkText: "تحديث",
                    btnOkOnPress: (n) {
-                     checkForUpdates(context);
+                     checkForUpdates(context,true);
 
                   //  openWhatsApp("970594899524");
                    },

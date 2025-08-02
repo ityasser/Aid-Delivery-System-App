@@ -31,6 +31,7 @@ class SearchAidController extends Notifier<SearchState> with Helpers {
     personWithProject.isReceived = value;
     personWithProject.receivedTime = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
     personWithProject.note = note;
+    personWithProject.isDeleted=false;
     print("personWithProject: ${personWithProject.toJson()}");
     ObjectBox.instance.updatePerson(personWithProject, project_id);
     updateLocalProjects();

@@ -82,7 +82,7 @@ class Main extends ConsumerState<App> with SingleTickerProviderStateMixin {
     AppLocal.iniLocale();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       connectWifi();
-      checkForUpdates(context);
+      checkForUpdates(context,false);
 
     });
   }

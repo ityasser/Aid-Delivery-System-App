@@ -254,7 +254,7 @@ class ObjectBox {
     List<PersonDB> list =
         ObjectBox.instance.personBox
             .getAll()
-            .where((p) => p.project_id == projectId && p.isReceived == true)
+            .where((p) => p.project_id == projectId && p.isReceived == true && p.isDeleted == false)
             .toList();
     return convertToPersonsList(list);
   }
@@ -325,8 +325,9 @@ class ObjectBox {
   void resetPersonDeleted(int? projectId) {
     List<PersonDB> list = getPersonsDBByAidManageIdDeleted(projectId);
     for (PersonDB person in list) {
+      person.isReceived=false;
       person.isDeleted = false;
-      person.receivedTime = null;
+      // person.receivedTime = null;
       person.note=null;
       personBox.put(person);
     }
@@ -380,6 +381,7 @@ class ObjectBox {
   void updatePersonDownload(Person apiPerson, int? object_id) {
     PersonDB? existingPerson = getPersonDB(apiPerson.object_id, object_id);
     if (existingPerson != null) {
+
       // print("existingPerson ${existingPerson.project_id} = ${apiPerson.project_id}");
       // existingPerson.project_id = apiPerson.project_id;
       // existingPerson.aid_person_id = apiPerson.object_id;
@@ -396,22 +398,35 @@ class ObjectBox {
       }
 
 
+      try{
+
+
+      DateTime dateApi = DateTime.parse(apiPerson.receivedTime?? "");
+      DateTime dateLocal = DateTime.parse(existingPerson.receivedTime?? "");
+
+      if (dateApi.isAfter(dateLocal)) {
         existingPerson.isReceived = apiPerson.isReceived;
+        existingPerson.isDeleted= apiPerson.isDeleted;
+        print("dateApi is update");
+        if (apiPerson.receivedTime != null && apiPerson.receivedTime!.isNotEmpty) {
+          existingPerson.receivedTime = apiPerson.receivedTime;
+        }
+      } else if (dateApi.isBefore(dateLocal)) {
 
+        print("dateLocal is update");
+      } else {
+        print("== is update");
 
+      }
+      }catch(e){
+        print("updatePersonDownloadError: ${e.toString()}");
+      }
       // print("receivedTimexxxxx: ${apiPerson.receivedTime}");
       // print(
       //   "receivedTimexxxxx: ${(apiPerson.receivedTime != null && apiPerson.receivedTime!.isNotEmpty)}",
       // );
-      if (apiPerson.receivedTime != null &&
-          apiPerson.receivedTime!.isNotEmpty) {
-        existingPerson.receivedTime = apiPerson.receivedTime;
-      }
 
-      if(apiPerson.person_pid=="804448801"){
-        print("Yasser.Kuhail");
-        print(apiPerson.toJson());
-      }
+
       personBox.put(existingPerson);
     } else {
       PersonDB apiPersonDB = toPersonDB(apiPerson);

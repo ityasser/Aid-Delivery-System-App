@@ -197,21 +197,26 @@ class LocalProjectsNotifier extends ListNotifier<Project>
 
   Future<void> onTapUpdate(Project project) async {
     showLoading();
-    SyncService.uploadPersonByProject(project, message: (note){
-      showMessage(note??"",error: false);
-      refreshListLocalProjects();
-
-    });
-    SyncService.downloadPersonByProject(project,message: (note){
-      showMessage(note??"",error: false);
-      refreshListLocalProjects();
-
-    });
     SyncService.uploadDeletedPersonByProject(project,message: (note){
       showMessage(note??"",error: false);
       refreshListLocalProjects();
 
     });
+
+
+
+    SyncService.downloadPersonByProject(project, message: (note){
+      showMessage(note??"",error: false);
+      refreshListLocalProjects();
+      SyncService.uploadPersonByProject(project,message: (note){
+        showMessage(note??"",error: false);
+        refreshListLocalProjects();
+
+
+      });
+    });
+
+
     dismissLoading();
 
     // uploadProjectWithPersons(project);

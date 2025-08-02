@@ -62,7 +62,7 @@ class SyncService {
   static Future<bool> uploadPersonByProject(Project item,{Function(String? note)? message}) async {
     try {
       List<Map<String, dynamic>> json = ObjectBox.instance.getPersonsByProjectAndReceived(item.object_id ?? 0);
-      print("uploadProjectWithPersons: ${item.aids_name} =>$json");
+      print("items_uploadProjectWithPersons: ${item.aids_name} =>$json");
       if(json.isNotEmpty){
       BaseResponse? response = await Apis().uploadPersons({"data": jsonEncode(json)});
       if (response != null) {
@@ -75,7 +75,7 @@ class SyncService {
         } else {
           print("uploadProjectWithPersons: ${item.aids_name} =>${response.message ?? ""}");
           if(message!=null)message(response.message);
-          return false;
+          return true;
         }
       } else {
 
@@ -98,7 +98,7 @@ class SyncService {
 static Future<void> uploadDeletedPersonByProject(Project item,{Function(String? note)? message}) async {
     try {
       List<Map<String, dynamic>> json = ObjectBox.instance.getPersonsByProjectDeleted(item.object_id ?? 0);
-      print("uploadProjectWithPersonsDeleted: ${item.aids_name} =>$json");
+      print("items_uploadProjectWithPersonsDeleted: ${item.aids_name} =>$json");
       if(json.isNotEmpty){
       BaseResponse? response = await Apis().uploadPersonsDeleted({"data": jsonEncode(json)});
       if (response != null) {
@@ -130,11 +130,16 @@ static Future<void> uploadDeletedPersonByProject(Project item,{Function(String? 
   static Future<void> syncData()async {
    List<Project> projects=ObjectBox.instance.getAllProjects();
    for (var project in projects) {
-     await uploadDeletedPersonByProject(project);
-     bool status=await uploadPersonByProject(project);
-     if(status)
-       await downloadPersonByProject(project);
+      await uploadDeletedPersonByProject(project);
+
+     bool status=await downloadPersonByProject(project);
+     if(status) {
+       await uploadPersonByProject(project);
+
+     }
      //
    }
+
+
   }
 }
