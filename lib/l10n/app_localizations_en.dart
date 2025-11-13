@@ -45,7 +45,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get requiredPassword => 'password is required';
 
   @override
-  String get validPassword => 'The password must be greater than 8 letters or numbers';
+  String get validPassword =>
+      'The password must be greater than 8 letters or numbers';
 
   @override
   String get pleaseTypeHere => 'Please type here';
@@ -99,7 +100,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get and => 'and';
 
   @override
-  String get receive_message_via_email => 'You will receive an email with your verification code';
+  String get receive_message_via_email =>
+      'You will receive an email with your verification code';
 
   @override
   String get send => 'send';
@@ -141,7 +143,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get enter_code_sent_email => 'Enter the code sent to you via email';
 
   @override
-  String get msg_not_login => 'You are not logged in to benefit from the application services please log in';
+  String get msg_not_login =>
+      'You are not logged in to benefit from the application services please log in';
 
   @override
   String get notifications => 'Notifications';
@@ -459,7 +462,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get delete_account => 'delete account';
 
   @override
-  String get please_agree_to_the_terms_and_conditions => 'Please agree to the terms and conditions';
+  String get please_agree_to_the_terms_and_conditions =>
+      'Please agree to the terms and conditions';
 
   @override
   String get favorite => 'Favorite';
@@ -480,7 +484,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get do_you_want_to_logout => 'Do you want to log out?';
 
   @override
-  String get do_you_want_to_delete_the_account => 'Do you want to delete the account?';
+  String get do_you_want_to_delete_the_account =>
+      'Do you want to delete the account?';
 
   @override
   String get view => 'View';
@@ -525,7 +530,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get review => 'review';
 
   @override
-  String get real_estate_you_want_to_feature => 'The real estate you want to feature';
+  String get real_estate_you_want_to_feature =>
+      'The real estate you want to feature';
 
   @override
   String get ad_display_platform => 'Ad display platform';
@@ -591,7 +597,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get for_suggestions_questions => 'For suggestions and Questions';
 
   @override
-  String get hint_contactus => 'Send us your inquiries using the form below and our team will contact you as soon as possible';
+  String get hint_contactus =>
+      'Send us your inquiries using the form below and our team will contact you as soon as possible';
 
   @override
   String get visit_us => 'Visit Us';
@@ -705,16 +712,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get add_a_video => 'Add a video';
 
   @override
-  String get upload_to_YouTube => 'Add videos to your properties from YouTube. Upload to YouTube and paste the link below';
+  String get upload_to_YouTube =>
+      'Add videos to your properties from YouTube. Upload to YouTube and paste the link below';
 
   @override
   String get link_video => 'Link Video';
 
   @override
-  String get i_undertake_to_be_the_real_owner_of_estate => 'I undertake to be the real owner of estate';
+  String get i_undertake_to_be_the_real_owner_of_estate =>
+      'I undertake to be the real owner of estate';
 
   @override
-  String get whatsapp_receive => 'Enter your WhatsApp number to receive inquiries from tenants';
+  String get whatsapp_receive =>
+      'Enter your WhatsApp number to receive inquiries from tenants';
 
   @override
   String get non => 'non';
@@ -729,7 +739,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get choose_your_package => 'Choose your package';
 
   @override
-  String get provide_estate_owners_packages => 'We provide real estate owners with packages to subscribe to the platform with various benefits';
+  String get provide_estate_owners_packages =>
+      'We provide real estate owners with packages to subscribe to the platform with various benefits';
 
   @override
   String get yearly => 'yearly';
@@ -771,7 +782,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get no_results_found => 'No Results Found';
 
   @override
-  String get search_locations_recently => 'Locations you searched most recently';
+  String get search_locations_recently =>
+      'Locations you searched most recently';
 
   @override
   String get lowest_price => 'Lowest price';
@@ -804,7 +816,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get end_package => 'Your current package subscription has expired';
 
   @override
-  String get please_renew_package => 'Please renew your subscription to continue to benefit from our premium services';
+  String get please_renew_package =>
+      'Please renew your subscription to continue to benefit from our premium services';
 
   @override
   String get subscription_renewal => 'Subscription renewal';
@@ -813,7 +826,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get error => 'Sorry, something went wrong';
 
   @override
-  String get error_try_again => 'It seems that something went wrong, please try again';
+  String get error_try_again =>
+      'It seems that something went wrong, please try again';
 
   @override
   String get try_again => 'Try again';
@@ -825,16 +839,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sorry_not_logged_in => 'Sorry, you are not logged in';
 
   @override
-  String get do_not_miss_chance_upgrade => 'Don\'t miss the chance to upgrade to take advantage of our enhanced services and upgraded experience';
+  String get do_not_miss_chance_upgrade =>
+      'Don\'t miss the chance to upgrade to take advantage of our enhanced services and upgraded experience';
 
   @override
-  String get upgrade_your_package => 'Upgrade your package now and enjoy additional features';
+  String get upgrade_your_package =>
+      'Upgrade your package now and enjoy additional features';
 
   @override
   String get provider_name => 'Provider name';
 
   @override
-  String get title_our_partners => 'We have a group of success partners who share our excellence It works to achieve our goals';
+  String get title_our_partners =>
+      'We have a group of success partners who share our excellence It works to achieve our goals';
 
   @override
   String get finish_selling_real_estate_ads => 'Finish selling real estate ads';
@@ -846,16 +863,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get user_type => 'User type';
 
   @override
-  String get app_description => 'An application for managing humanitarian aid, allowing project and beneficiary registration, tracking aid receipt, and efficient data management. It offers advanced features such as search, automatic updates, and Excel export.';
+  String get app_description =>
+      'An application for managing humanitarian aid, allowing project and beneficiary registration, tracking aid receipt, and efficient data management. It offers advanced features such as search, automatic updates, and Excel export.';
 
   @override
   String get features_title => '📌 Key Features:';
 
   @override
-  String get feature_1 => 'Manage projects and beneficiaries with add, update, and delete options.';
+  String get feature_1 =>
+      'Manage projects and beneficiaries with add, update, and delete options.';
 
   @override
-  String get feature_2 => 'Sync data with API for automatic project and beneficiary updates.';
+  String get feature_2 =>
+      'Sync data with API for automatic project and beneficiary updates.';
 
   @override
   String get feature_3 => 'Advanced search for beneficiaries using ID number.';
