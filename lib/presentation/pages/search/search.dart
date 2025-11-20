@@ -40,6 +40,9 @@ class SearchPage extends ConsumerWidget {
     final selectedProjects = ref.watch(selectedProjectsProvider);
     // final selectedProjectsNotifier = ref.read(selectedProjectsProvider.notifier);
 
+    print(
+      "onSelectionChanged selectedProjects reload:${searchState.selectedProjects}",
+    );
     return Scaffold(
       body: Padding(
         padding: EdgeInsets.only(top: 20.w, left: 20.w, right: 20.w),
@@ -84,20 +87,17 @@ class SearchPage extends ConsumerWidget {
                                 title: "حالة الاستلام",
                                 description:
                                 " المستفيد ${searchState.person?.fullName} تم استلامه سابقاً",
-
                                 btnOkText: "موافق",
-
                               );
                               personController.showMessage(
                                 "المستفيد تم استلامه سابقاً",
                                 error: true,
                               );
                             }
+                            print("selected projectsc ${searchState.selectedProjects}");
                             for (var project in searchState.selectedProjects) {
                               print("action search: toggleReceived");
-                              print(
-                                "action search: toggleReceived  ${searchState.person!.toJson()}",
-                              );
+                              print("action search: toggleReceived  ${searchState.person!.toJson()}",);
                               if(!personController.checkIsReceivedWithProjectAndPerson(searchState.person!.person_pid, project.object_id)) {
                                 personController.toggleReceived(
                                 person_pid: searchState.person!.person_pid,

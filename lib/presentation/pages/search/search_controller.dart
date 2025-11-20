@@ -49,6 +49,9 @@ class SearchAidController extends Notifier<SearchState> with Helpers {
 
   void updateSelectedProjects(List<Project> newSelected) {
     state = state.copyWith(selectedProjects: [...newSelected]);
+    print(
+      "onSelectionChanged selectedProjects state:${state.selectedProjects}",
+    );
   }
 
   bool hasAnyPersonNotReceived(String? pid) {
