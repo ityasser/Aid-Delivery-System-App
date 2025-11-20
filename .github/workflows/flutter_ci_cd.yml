@@ -46,7 +46,8 @@ jobs:
 
 
       - name: Make installer using NSIS
-        run: "C:\\Program Files (x86)\\NSIS\\makensis.exe" installer_script.nsi
+        run: |
+          "C:\Program Files (x86)\NSIS\makensis.exe" installer_script.nsi
       #        run: makensis installer_script.nsi
       - name: Upload Installer to GitHub Release
         uses: svenstaro/upload-release-action@v2
