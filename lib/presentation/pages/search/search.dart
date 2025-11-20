@@ -63,7 +63,7 @@ class SearchPage extends ConsumerWidget {
                           FilteringTextInputFormatter.digitsOnly,
                         ],
                         textInputAction: TextInputAction.search,
-                        onFieldSubmitted: (value) {
+                        onFieldSubmitted: (value) async {
                           final now = DateTime.now();
                           // إذا تم الضغط مرتين خلال فترة قصيرة
                           if (_lastEnterTime != null && now.difference(_lastEnterTime!) < _enterThreshold) {
@@ -80,6 +80,14 @@ class SearchPage extends ConsumerWidget {
                               USBPrinterService u = USBPrinterService();
                               u.printReceipt(searchState.person!, personController.getProjectByPerson(searchState.person,),);
                             }else{
+                               DialogService.showMessageDialog(
+                                title: "حالة الاستلام",
+                                description:
+                                " المستفيد ${searchState.person?.fullName} تم استلامه سابقاً",
+
+                                btnOkText: "موافق",
+
+                              );
                               personController.showMessage(
                                 "المستفيد تم استلامه سابقاً",
                                 error: true,

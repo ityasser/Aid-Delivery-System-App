@@ -67,6 +67,7 @@ class _AidListSectionState extends State<AidListPerson> {
         print("aid: ${aid.toJson()}");
 
         return InkWell(
+
           onTap: () {
             final isSelected = widget.selectedProjects.any(
               (item) => item.object_id == widget.list_projects[index].object_id,
@@ -83,71 +84,74 @@ class _AidListSectionState extends State<AidListPerson> {
             });
             widget.onSelectionChanged(widget.selectedProjects);
           },
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: Row(
-              children: [
-                Checkbox(
-                  value: widget.selectedProjects.any(
-                    (item) =>
-                        item.object_id == widget.list_projects[index].object_id,
+          child: Container(
+            color: aid.isReceived?ColorsUi.green:Colors.orange,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Row(
+                children: [
+                  Checkbox(
+                    value: widget.selectedProjects.any(
+                      (item) =>
+                          item.object_id == widget.list_projects[index].object_id,
+                    )&&!aid.isReceived,
+                    onChanged: (val) {
+                      setState(() {
+                        if (val!) {
+                          widget.selectedProjects.add(
+                            widget.list_projects[index],
+                          );
+                        } else {
+                          widget.selectedProjects.removeWhere(
+                            (item) =>
+                                item.object_id ==
+                                widget.list_projects[index].object_id,
+                          );
+                        }
+                        widget.onSelectionChanged(widget.selectedProjects);
+                      });
+                    },
                   ),
-                  onChanged: (val) {
-                    setState(() {
-                      if (val!) {
-                        widget.selectedProjects.add(
-                          widget.list_projects[index],
-                        );
-                      } else {
-                        widget.selectedProjects.removeWhere(
-                          (item) =>
-                              item.object_id ==
-                              widget.list_projects[index].object_id,
-                        );
-                      }
-                      widget.onSelectionChanged(widget.selectedProjects);
-                    });
-                  },
-                ),
-                SizedBox(width: 12), // مسافة بين الـ checkbox والنص
-                Expanded(
-                  child: Row(
-                    children: [
-                      Text(
-                        widget.list_projects[index].title ?? "",
-                        style: TextStyle(fontSize: 18),
-                      ),
-                      SizedBox(width: 20.w),
-                      Text(
-                        widget.list_projects[index].aids_name ?? "",
-                        style: TextStyle(fontSize: 18),
-                      ),
-                    ],
+                  SizedBox(width: 12), // مسافة بين الـ checkbox والنص
+                  Expanded(
+                    child: Row(
+                      children: [
+                        Text(
+                          widget.list_projects[index].title ?? "",
+                          style: TextStyle(fontSize: 18),
+                        ),
+                        SizedBox(width: 20.w),
+                        Text(
+                          widget.list_projects[index].aids_name ?? "",
+                          style: TextStyle(fontSize: 18),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                CustomText(
-                  (aid.isReceived)
-                      ? "مستلم"
-                      : "مرشح",
-                  size: 18.sp,
-                  color:
-                  (aid.isReceived)
-                      ? ColorsUi.green
-                      : ColorsUi.primary,
-                  fontFamily: Founts.normal,
-                  fontWeight: FontWeight.normal,
-                ), SizedBox(width: 10.w,),
-                CustomText(
-                  !aid.isReceived &&aid.isDeleted?"":aid.receivedTime??"",
-                  size: 18.sp,
-                  color:
-                  (aid.isReceived)
-                      ? ColorsUi.green
-                      : ColorsUi.primary,
-                  fontFamily: Founts.normal,
-                  fontWeight: FontWeight.normal,
-                ),SizedBox(width: 30.w,),
-              ],
+                  CustomText(
+                    (aid.isReceived)
+                        ? "مستلم"
+                        : "مرشح",
+                    size: 18.sp,
+                    color:
+                    (aid.isReceived)
+                        ? ColorsUi.white
+                        : ColorsUi.white,
+                    fontFamily: Founts.normal,
+                    fontWeight: FontWeight.normal,
+                  ), SizedBox(width: 10.w,),
+                  CustomText(
+                    !aid.isReceived &&aid.isDeleted?"":aid.receivedTime??"",
+                    size: 18.sp,
+                    color:
+                    (aid.isReceived)
+                        ? ColorsUi.white
+                        : ColorsUi.white,
+                    fontFamily: Founts.normal,
+                    fontWeight: FontWeight.normal,
+                  ),SizedBox(width: 30.w,),
+                ],
+              ),
             ),
           ),
         );
